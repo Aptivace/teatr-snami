@@ -7,4 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Spectacle extends Model
 {
     //
+    protected $casts = [
+        'images' => 'array',
+    ];
 }

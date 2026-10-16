@@ -29,15 +29,15 @@
         <div class="wrap split">
             <div class="ph"></div>
             <div>
-                <span class="tag">Драма, 16+</span><br><br>
-                <h1 style="font-size:clamp(2rem,5vw,3.4rem)">Название спектакля</h1>
+                <span class="tag">{{$play->genre}}, {{$play->age}}+</span><br><br>
+                <h1 style="font-size:clamp(2rem,5vw,3.4rem)">{{$play->name}}</h1>
                 <div class="facts">
                     <div><span>Режиссёр</span>Имя Фамилия</div>
-                    <div><span>Премьера</span>2024</div>
-                    <div><span>Длительность</span>2 часа</div>
-                    <div><span>Возраст</span>16+</div>
+                    <div><span>Жанр</span>{{$play->genre}}</div>
+                    <div><span>Длительность</span>{{$play->duration}}</div>
+                    <div><span>Возраст</span>{{$play->age}}+</div>
                 </div>
-                <p>Полное описание спектакля: сюжет, замысел постановки, особенности формы.</p>
+                <p>{{$play->desc}}</p>
                 <a class="btn" href="#dates">Ближайшие показы</a>
             </div>
         </div>
@@ -46,31 +46,31 @@
         <div class="wrap">
             <h2>В ролях</h2>
             <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">
-                <article class="person">
-                    <div class="ph sq"></div>
-                    <h3 style="font-size:1.15rem">Имя Фамилия</h3><span class="mut">Роль</span></article>
-                <article class="person">
-                    <div class="ph sq"></div>
-                    <h3 style="font-size:1.15rem">Имя Фамилия</h3><span class="mut">Роль</span></article>
-                <article class="person">
-                    <div class="ph sq"></div>
-                    <h3 style="font-size:1.15rem">Имя Фамилия</h3><span class="mut">Роль</span></article>
-                <article class="person">
-                    <div class="ph sq"></div>
-                    <h3 style="font-size:1.15rem">Имя Фамилия</h3><span class="mut">Роль</span></article>
+                @foreach($actors as $actor)
+                    <article class="person">
+                        <div class="ph sq"><img src="{{$actor->image}}" alt="{{$actor->name}}"></div>
+                        <h3 style="font-size:1.15rem">{{$actor->name}}</h3><span class="mut">{{$actor->role}}</span></article>
+                @endforeach
             </div>
         </div>
     </section>
     <section class="sec">
         <div class="wrap split">
             <div id="dates"><h2>Ближайшие показы</h2>
-                <a class="date" href="afisha-item.html">
-                    <div class="d">12 окт</div>
-                    <div class="i"><b>19:00</b><span class="mut">Основная сцена</span></div>
-                    <span class="btn">Билеты</span></a>
+                @foreach($afishes as $afisha)
+                    <a class="date" href="/afisha/{{$afisha->id}}">
+                        <div class="d">12 окт</div>
+                        <div class="i"><b>{{$afisha->time}}</b><span class="mut">{{$afisha->city}}</span></div>
+                        <span class="btn">Билеты</span></a>
+                @endforeach
+
             </div>
             <div><h2>Награды спектакля</h2>
-                <div class="award"><b>Название награды</b><span class="mut">2025, фестиваль «Название»</span></div>
+                @foreach($rewards as $reward)
+                    <a href="{{$reward->url}}">
+                        <div class="award"><b>{{$reward->name}}</b><span class="mut">{{$reward->year}}, {{$reward->festival_name}}»</span></div>
+                    </a>
+                @endforeach
             </div>
         </div>
     </section>

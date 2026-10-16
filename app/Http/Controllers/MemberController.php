@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Member;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class MemberController extends Controller
@@ -31,31 +32,41 @@ class MemberController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = validator($request->all(), [
-            'name' => 'required|string',
-            'desc' => 'string|nullable',
-            'role' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'role' => 'required|string|max:255',
+            'desc' => 'nullable|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120', // Одиночная картинка обязательна при создании
         ]);
 
-        if ($validator->fails()) return back()->withErrors($validator->errors())->withInput();
+        $imagePath = null;
 
-        $data = $validator->validated();
+        // Обработка загрузки файла
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $uuid = Str::uuid();
+            $extension = $file->getClientOriginalExtension();
+            $filename = "{$uuid}.{$extension}";
 
-        $image = $request->file('image');
+            // Сохраняем в storage/app/public/members
+            $imagePath = $file->storeAs('members', $filename, 'public');
+        }
 
-        $url = Str::uuid() . "." . $image->getClientOriginalExtension();
-        $image->move(public_path('images'), $url);
+        // Создаем запись в базе данных
+        Member::create([
+            'name' => $validated['name'],
+            'role' => $validated['role'],
+            'desc' => $validated['desc'] ?? null,
+            'image' => $imagePath,
+        ]);
 
-        $data['image'] = "images/$url";
-        Member::create($data);
-        return back();
-
-
-
-
-
+        return back()->with('success', 'Участник успешно добавлен!');
     }
+
+
+
+
+
 
     /**
      * Display the specified resource.
@@ -70,7 +81,7 @@ class MemberController extends Controller
      */
     public function edit(Member $member)
     {
-        //
+        return;
     }
 
     /**
@@ -78,14 +89,55 @@ class MemberController extends Controller
      */
     public function update(Request $request, Member $member)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'role' => 'required|string|max:255',
+            'desc' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120', // При обновлении картинка опциональна
+        ]);
+
+        $imagePath = $member->image; // По умолчанию оставляем старую картинку
+
+        // Если загружена новая картинка
+        if ($request->hasFile('image')) {
+            // 1. Удаляем старую картинку с диска, если она существовала
+            if ($member->image && Storage::disk('public')->exists($member->image)) {
+                Storage::disk('public')->delete($member->image);
+            }
+
+            // 2. Сохраняем новую
+            $file = $request->file('image');
+            $uuid = Str::uuid();
+            $extension = $file->getClientOriginalExtension();
+            $filename = "{$uuid}.{$extension}";
+
+            $imagePath = $file->storeAs('members', $filename, 'public');
+        }
+
+        // Обновляем запись
+        $member->update([
+            'name' => $validated['name'],
+            'role' => $validated['role'],
+            'desc' => $validated['desc'] ?? null,
+            'image' => $imagePath,
+        ]);
+
+        return back()->with('success', 'Данные участника обновлены!');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Удалить участника и его файл картинки
      */
     public function destroy(Member $member)
     {
-        //
+        // Удаляем файл картинки из storage, если он есть
+        if ($member->image && Storage::disk('public')->exists($member->image)) {
+            Storage::disk('public')->delete($member->image);
+        }
+
+        // Удаляем саму запись из базы
+        $member->delete();
+
+        return back()->with('success', 'Участник успешно удален!');
     }
 }

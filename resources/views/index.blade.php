@@ -31,8 +31,8 @@
                 <h1>Театр, который говорит с вами</h1>
                 <p class="lead">СНАМИ — театральный союз актёров и режиссёров. Мы играем камерные и большие спектакли и
                     любим, когда зал дышит вместе со сценой.</p>
-                <div class="acts"><a class="btn" href="afisha.html">Выбрать спектакль</a><a class="btn ghost"
-                                                                                            href="repertoire.html">Весь
+                <div class="acts"><a class="btn" href="/afisha">Выбрать спектакль</a><a class="btn ghost"
+                                                                                            href="/repertuar">Весь
                         репертуар</a></div>
             </div>
             <div class="ph"><!-- <img src="storage/hero.jpg" alt="Сцена театра СНАМИ"> --></div>
@@ -41,47 +41,31 @@
 
     <section class="sec alt">
         <div class="wrap">
-            <div class="sec-h"><h2>Ближайшие показы</h2><a href="afisha.html">Вся афиша</a></div>
+            <div class="sec-h"><h2>Ближайшие показы</h2><a href="/afisha">Вся афиша</a></div>
 
-            <a class="date" href="afisha-item.html">
-                <div class="d">12 окт</div>
-                <div class="i"><b>Название спектакля</b><span class="mut">Пятница, 19:00 · Основная сцена</span></div>
-                <span class="btn">Билеты</span></a>
-            <a class="date" href="afisha-item.html">
-                <div class="d">19 окт</div>
-                <div class="i"><b>Название спектакля</b><span class="mut">Пятница, 19:00 · Малая сцена</span></div>
-                <span class="btn">Билеты</span></a>
-            <a class="date" href="afisha-item.html">
-                <div class="d">26 окт</div>
-                <div class="i"><b>Название спектакля</b><span class="mut">Пятница, 18:30 · Основная сцена</span></div>
-                <span class="btn">Билеты</span></a>
+            @foreach($afishes as $afisha)
+                <a class="date" href="/afisha/{{$afisha->id}}">
+                    <div class="d">12 окт</div>
+                    <div class="i"><b>{{$afisha->spectace->name}}</b><span class="mut">{{$afisha->city}}, {{$afisha->time}} · {{$afisha->address}}</span></div>
+                    <span class="btn">Билеты</span></a>
+            @endforeach
 
         </div>
     </section>
 
     <section class="sec">
         <div class="wrap">
-            <div class="sec-h"><h2>Репертуар</h2><a href="repertoire.html">Все спектакли</a></div>
+            <div class="sec-h"><h2>Репертуар</h2><a href="/repertuar">Все спектакли</a></div>
             <div class="grid">
 
 
-                <a class="card" href="play.html">
-                    <div class="ph w"></div>
-                    <div class="b"><span class="tag">Драма, 16+</span>
-                        <h3>Название спектакля</h3><span class="mut">Режиссёр: Имя Фамилия</span></div>
-                </a>
-
-                <a class="card" href="play.html">
-                    <div class="ph w"></div>
-                    <div class="b"><span class="tag">Драма, 16+</span>
-                        <h3>Название спектакля</h3><span class="mut">Режиссёр: Имя Фамилия</span></div>
-                </a>
-
-                <a class="card" href="play.html">
-                    <div class="ph w"></div>
-                    <div class="b"><span class="tag">Драма, 16+</span>
-                        <h3>Название спектакля</h3><span class="mut">Режиссёр: Имя Фамилия</span></div>
-                </a>
+                @foreach($repertuar as $play)
+                    <a class="card" href="/repertuar/{{$play->id}}}">
+                        <div class="ph w"></div>
+                        <div class="b"><span class="tag">{{$play->genre}}, {{$play->age}}+</span>
+                            <h3>{{$play->name}}</h3><span class="mut">Режиссёр: Имя Фамилия</span></div>
+                    </a>
+                @endforeach
 
             </div>
         </div>
@@ -92,37 +76,32 @@
             <div><h2>О театре</h2>
                 <p class="lead">Мы работаем с живым словом и честной игрой. В труппе — актёры разных поколений, а в
                     репертуаре — классика, современная драматургия и экспериментальные постановки.</p><a
-                    class="btn ghost" href="team.html">Познакомиться с труппой</a></div>
+                    class="btn ghost" href="/members">Познакомиться с труппой</a></div>
             <div>
                 <h3>Награды</h3>
 
-                <div class="award"><b>Название награды</b><span
-                        class="mut">2025, фестиваль «Название» · «Спектакль»</span></div>
-                <br>
-                <div class="award"><b>Название награды</b><span class="mut">2024, фестиваль «Название»</span></div>
+                @foreach($rewards as $reward)
+                    <div class="award"><b>{{$reward->name}}</b><span
+                            class="mut">{{$reward->year}}, {{$reward->festival_name}} · {{$reward->spectacle ? "«{$reward->spectacle->name}»" : ""}} </span></div>
+                    <br>
+                @endforeach
+
+
             </div>
         </div>
     </section>
 
     <section class="sec">
         <div class="wrap">
-            <div class="sec-h"><h2>Говорят зрители</h2><a href="reviews.html">Все отзывы</a></div>
+            <div class="sec-h"><h2>Говорят зрители</h2><a href="/reviews">Все отзывы</a></div>
             <div class="grid">
 
-                <figure class="quote" style="margin:0"><p>Текст отзыва зрителя о спектакле — несколько живых
-                        предложений.</p>
-                    <figcaption class="mut">Имя зрителя</figcaption>
-                </figure>
+                @foreach($reviews as $review)
+                    <figure class="quote" style="margin:0"><p>{{$review->text}}</p>
+                        <figcaption class="mut">{{$review->username}}</figcaption>
+                    </figure>
+                @endforeach
 
-                <figure class="quote" style="margin:0"><p>Текст отзыва зрителя о спектакле — несколько живых
-                        предложений.</p>
-                    <figcaption class="mut">Имя зрителя</figcaption>
-                </figure>
-
-                <figure class="quote" style="margin:0"><p>Текст отзыва зрителя о спектакле — несколько живых
-                        предложений.</p>
-                    <figcaption class="mut">Имя зрителя</figcaption>
-                </figure>
 
             </div>
         </div>

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Afisha;
 use App\Models\User;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -24,19 +26,35 @@ class AdminController extends Controller
 
     public function login(Request $request)
     {
-        $validator = validator()->make($request->all(), [
+        $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
+        $remember = $request->boolean("remember");
 
-        if ($validator->fails()) return back()->withErrors($validator->errors())->withInput();
+        if (Auth::attempt($credentials, $remember)) {
+            $request->session()->regenerate();
+            return redirect()->intended('/admin');
+        }
 
-        if (auth()->attempt($validator->validated())) return back()->withErrors(["error" => "Неверный логин или пароль"]);
 
-        if (auth()->user()->role !== "admin") return back()->withErrors(['error' => 'Не админ']);
+        return back()->withErrors(['email' => 'Неверная почта или пароль'])->onlyInput('email', 'remember');
+    }
 
-        return back();
+    public function logout(Request $request)
+    {
+        // 1. Выход пользователя
+        Auth::logout();
+
+        // 2. Сброс текущей сессии (очищает все сессионные данные)
+        $request->session()->invalidate();
+
+        // 3. Генерация нового CSRF-токена для защиты от повторного использования
+        $request->session()->regenerateToken();
+
+        // 4. Редирект на главную страницу или страницу входа
+        return redirect('/')->with('success', 'Вы успешно вышли из системы');
     }
 
 }

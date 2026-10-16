@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Afisha;
+use App\Models\Spectacle;
 use Illuminate\Http\Request;
 
 class AfishaController extends Controller
@@ -25,7 +26,10 @@ class AfishaController extends Controller
      */
     public function create()
     {
-        //
+        // Передаем список спектаклей, чтобы привязать афишу к конкретной постановке
+        $spectacles = Spectacle::all();
+
+        return view('admin-afisha-add', compact('spectacles'));
     }
 
     /**
@@ -33,7 +37,20 @@ class AfishaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'spectacle_id' => 'required|exists:spectacles,id',
+            'city' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'date' => 'required|date',
+            'time' => 'required|string|max:50', // Например: "19:00"
+            'price' => 'required|integer|min:0',
+            'desc' => 'nullable|string',
+            'status' => 'required|string|in:pending,active,cancelled,completed', // Ограничиваем допустимые статусы
+        ]);
+
+        Afisha::create($validated);
+
+        return back()->with('success', 'Афиша успешно создана!');
     }
 
     /**
@@ -49,7 +66,9 @@ class AfishaController extends Controller
      */
     public function edit(Afisha $afisha)
     {
-        //
+        $spectacles = Spectacle::all();
+
+        return view('admin-afisha-add', compact('afisha', 'spectacles'));
     }
 
     /**
@@ -57,7 +76,20 @@ class AfishaController extends Controller
      */
     public function update(Request $request, Afisha $afisha)
     {
-        //
+        $validated = $request->validate([
+            'spectacle_id' => 'required|exists:spectacles,id',
+            'city' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'date' => 'required|date',
+            'time' => 'required|string|max:50',
+            'price' => 'required|integer|min:0',
+            'desc' => 'nullable|string',
+            'status' => 'required|string|in:pending,active,cancelled,completed',
+        ]);
+
+        $afisha->update($validated);
+
+        return back()->with('success', 'Афиша успешно обновлена!');
     }
 
     /**
@@ -65,6 +97,8 @@ class AfishaController extends Controller
      */
     public function destroy(Afisha $afisha)
     {
-        //
+        $afisha->delete();
+
+        return back()->with('success', 'Афиша успешно удалена!');
     }
 }

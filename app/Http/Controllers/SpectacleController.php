@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Spectacle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class SpectacleController extends Controller
 {
@@ -20,7 +22,7 @@ class SpectacleController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin-spectacles-add');
     }
 
     /**
@@ -28,7 +30,52 @@ class SpectacleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'name' => 'required|string',
+            'desc' => 'required|string',
+            'age' => 'required|integer',
+            'genre' => 'required|string',
+            'duration' => 'required|integer',
+            'images' => 'required|array|min:1',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+        ]);
+
+        // Массив для путей к картинкам, которые мы сохраним в базу
+        $imagePaths = [];
+
+        // Проверяем, есть ли файлы в запросе
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                // 1. Генерируем уникальный UUID для имени файла
+                $uuid = Str::uuid();
+
+                // 2. Получаем оригинальное расширение файла (например, jpg, png)
+                $extension = $image->getClientOriginalExtension();
+
+                // 3. Собираем новое имя: uuid + расширение (например, "a1b2c3d4-....jpg")
+                $filename = "{$uuid}.{$extension}";
+
+                // 4. Сохраняем в storage/app/public/uploads (или другую папку)
+                // Метод storeAs возвращает относительный путь файла внутри диска
+                $path = $image->storeAs('uploads', $filename, 'public');
+
+                // 5. Записываем путь в массив
+                $imagePaths[] = $path;
+            }
+        }
+
+        // Сохраняем данные в БД (предположим, у тебя есть модель)
+        // Вариант 1: Если у тебя JSON поле в таблице (например, массив путей)
+         Spectacle::create([
+             'name' => $data['name'],
+             'desc' => $data['desc'],
+             'age' => $data['age'],
+             'genre' => $data['genre'],
+             'duration' => $data['duration'],
+             'images' => $imagePaths, // Laravel автоматически сериализует в JSON, если указан $casts
+         ]);
+
+        return redirect()->back()->with('success', 'Спектакль создан!');
     }
 
     /**
@@ -52,7 +99,60 @@ class SpectacleController extends Controller
      */
     public function update(Request $request, Spectacle $spectacle)
     {
-        //
+        // 1. Валидация входящих данных
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'desc' => 'required|string',
+            'age' => 'required|integer',
+            'genre' => 'required|string',
+            'duration' => 'required|integer',
+            'images' => 'nullable|array', // Новые картинки опциональны при обновлении
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+            'delete_images' => 'nullable|array', // Массив путей старых картинок, которые нужно удалить
+            'delete_images.*' => 'string',
+        ]);
+
+        // 2. Получаем текущий массив картинок из базы (предполагаем, что поле настроено как 'array' в $casts)
+        $currentImages = $spectacle->images ?? [];
+
+        // 3. Если пользователь решил удалить какие-то старые картинки
+        if ($request->has('delete_images')) {
+            foreach ($request->delete_images as $oldImagePath) {
+                // Удаляем файл из диска storage/app/public/...
+                if (Storage::disk('public')->exists($oldImagePath)) {
+                    Storage::disk('public')->delete($oldImagePath);
+                }
+                // Убираем путь из массива
+                $currentImages = array_values(array_diff($currentImages, [$oldImagePath]));
+            }
+        }
+
+        // 4. Если загружены новые картинки — сохраняем их и добавляем к массиву
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $uuid = Str::uuid();
+                $extension = $image->getClientOriginalExtension();
+                $filename = "{$uuid}.{$extension}";
+
+                // Сохраняем в storage/app/public/uploads
+                $path = $image->storeAs('uploads', $filename, 'public');
+
+                // Добавляем в общий массив
+                $currentImages[] = $path;
+            }
+        }
+
+        // 5. Обновляем основные данные записи в БД
+        $spectacle->update([
+            'name' => $validated['name'],
+            'desc' => $validated['desc'],
+            'age' => $validated['age'],
+            'genre' => $validated['genre'],
+            'duration' => $validated['duration'],
+            'images' => $currentImages, // Сохраняем итоговый актуальный список путей
+        ]);
+
+        return back()->with('success', 'Запись успешно обновлена!');
     }
 
     /**
@@ -60,6 +160,18 @@ class SpectacleController extends Controller
      */
     public function destroy(Spectacle $spectacle)
     {
-        //
+        // 1. Проверяем, есть ли привязанные картинки, и удаляем их с диска
+        if (!empty($spectacle->images) && is_array($spectacle->images)) {
+            foreach ($spectacle->images as $imagePath) {
+                if (Storage::disk('public')->exists($imagePath)) {
+                    Storage::disk('public')->delete($imagePath);
+                }
+            }
+        }
+
+        // 2. Удаляем саму запись из базы данных
+        $spectacle->delete();
+
+        return back()->with('success', 'Запись и все её файлы успешно удалены!');
     }
 }

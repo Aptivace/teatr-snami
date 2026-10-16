@@ -31,38 +31,11 @@
             <p class="lead">Актёры, режиссёры и команда, которая делает спектакли.</p><br>
             <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">
 
-
-                <article class="person">
-                    <div class="ph"></div>
-                    <h3>Имя Фамилия</h3><span class="mut">Актёр</span></article>
-
-                <article class="person">
-                    <div class="ph"></div>
-                    <h3>Имя Фамилия</h3><span class="mut">Актёр</span></article>
-
-                <article class="person">
-                    <div class="ph"></div>
-                    <h3>Имя Фамилия</h3><span class="mut">Актёр</span></article>
-
-                <article class="person">
-                    <div class="ph"></div>
-                    <h3>Имя Фамилия</h3><span class="mut">Актёр</span></article>
-
-                <article class="person">
-                    <div class="ph"></div>
-                    <h3>Имя Фамилия</h3><span class="mut">Актёр</span></article>
-
-                <article class="person">
-                    <div class="ph"></div>
-                    <h3>Имя Фамилия</h3><span class="mut">Актёр</span></article>
-
-                <article class="person">
-                    <div class="ph"></div>
-                    <h3>Имя Фамилия</h3><span class="mut">Актёр</span></article>
-
-                <article class="person">
-                    <div class="ph"></div>
-                    <h3>Имя Фамилия</h3><span class="mut">Актёр</span></article>
+                @foreach($members as $member)
+                    <article class="person">
+                        <div class="ph"><img src="{{$member->image}}" alt="{{$member->name}}"></div>
+                        <h3>{{$member->name}}</h3><span class="mut">{{$member->role}}</span></article>
+                @endforeach
 
             </div>
         </div>

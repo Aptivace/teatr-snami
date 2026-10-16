@@ -32,11 +32,16 @@
             <div class="split">
                 <div style="display:grid;gap:20px">
 
+                    @foreach($reviews as $review)
+                        <figure class="quote" style="margin:0"><p>{{$review->text}}</p>
+                            <figcaption class="mut">{{$review->name}} · <a href="/repertuar/{{$review->spectacle->id}}">{{$review->spectacle->name}}</a> ·
+                                {{$review->created_at}}
+                            </figcaption>
+                        </figure>
+                    @endforeach
 
-                    <figure class="quote" style="margin:0"><p>Текст отзыва зрителя о спектакле.</p>
-                        <figcaption class="mut">Имя зрителя · <a href="play.html">Название спектакля</a> · 01.10.2026
-                        </figcaption>
-                    </figure>
+
+
 
                     <figure class="quote" style="margin:0"><p>Текст отзыва зрителя о спектакле.</p>
                         <figcaption class="mut">Имя зрителя · <a href="play.html">Название спектакля</a> · 01.10.2026
@@ -55,13 +60,17 @@
 
                     <div class="pg"></div>
                 </div>
-                <form class="quote" method="POST" action="#">
+                <form class="quote" method="POST" action="/reviews">
+                    @csrf
 
                     <h3>Оставить отзыв</h3>
                     <p class="mut">Отзыв появится на сайте после проверки.</p>
                     <label for="n">Ваше имя</label><input id="n" name="name" required value="">
                     <label for="p">Спектакль</label><select id="p" name="play_id">
                         <option value="">Не выбран</option>
+                        @foreach($repertuar as $play)
+                            <option value="{{$play->id}}">{{$play->name}}</option>
+                        @endforeach
                     </select>
                     <label for="t">Отзыв</label><textarea id="t" name="text" rows="5" required></textarea>
                     <button class="btn" type="submit">Отправить отзыв</button>

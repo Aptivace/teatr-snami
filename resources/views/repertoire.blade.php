@@ -34,41 +34,13 @@
             <div class="grid">
 
 
-                <a class="card" href="play.html">
-                    <div class="ph w"></div>
-                    <div class="b"><span class="tag">Драма, 16+</span>
-                        <h3>Название спектакля</h3><span class="mut">Краткое описание в одну-две строки.</span></div>
-                </a>
-
-                <a class="card" href="play.html">
-                    <div class="ph w"></div>
-                    <div class="b"><span class="tag">Драма, 16+</span>
-                        <h3>Название спектакля</h3><span class="mut">Краткое описание в одну-две строки.</span></div>
-                </a>
-
-                <a class="card" href="play.html">
-                    <div class="ph w"></div>
-                    <div class="b"><span class="tag">Драма, 16+</span>
-                        <h3>Название спектакля</h3><span class="mut">Краткое описание в одну-две строки.</span></div>
-                </a>
-
-                <a class="card" href="play.html">
-                    <div class="ph w"></div>
-                    <div class="b"><span class="tag">Драма, 16+</span>
-                        <h3>Название спектакля</h3><span class="mut">Краткое описание в одну-две строки.</span></div>
-                </a>
-
-                <a class="card" href="play.html">
-                    <div class="ph w"></div>
-                    <div class="b"><span class="tag">Драма, 16+</span>
-                        <h3>Название спектакля</h3><span class="mut">Краткое описание в одну-две строки.</span></div>
-                </a>
-
-                <a class="card" href="play.html">
-                    <div class="ph w"></div>
-                    <div class="b"><span class="tag">Драма, 16+</span>
-                        <h3>Название спектакля</h3><span class="mut">Краткое описание в одну-две строки.</span></div>
-                </a>
+                @foreach($repertuar as $play)
+                    <a class="card" href="/repertuar/{{$play->id}}">
+                        <div class="ph w"></div>
+                        <div class="b"><span class="tag">{{$play->genre}}, {{$play->age}}+</span>
+                            <h3>{{$play->name}}</h3><span class="mut">{{$play->desc}}</span></div>
+                    </a>
+                @endforeach
 
             </div>
         </div>
