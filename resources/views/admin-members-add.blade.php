@@ -12,8 +12,8 @@
     <aside>
         <a class="logo" href="/">СНАМИ</a>
         <a href="/admin">Афиши</a>
-        <a href="/admin/spectacles" class="on">Репертуар</a>
-        <a href="/admin/members">Состав</a>
+        <a href="/admin/spectacles" >Репертуар</a>
+        <a href="/admin/members" class="on">Состав</a>
         <a href="/admin/rewards">Награды</a>
         <a href="/admin/reviews">Отзывы</a>
         <a href="/" target="_blank">Открыть сайт</a>
@@ -42,7 +42,7 @@
 
         {{-- Динамический action и метод (POST для создания, PUT для обновления) --}}
         <form class="panel" method="POST" enctype="multipart/form-data"
-              action="{{ isset($member) ? "/admin/members/$member->id/" : '/admin/members' }}">
+              action="{{ isset($member) ? "/admin/members/$member->id/edit" : '/admin/members' }}">
             @csrf
             @if(isset($member))
                 @method('PATCH')

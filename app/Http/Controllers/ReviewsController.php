@@ -12,7 +12,14 @@ class ReviewsController extends Controller
      */
     public function index()
     {
-        //
+        $reviews = Reviews::query()->where(['status' => 'approved'])->get();
+        return view('reviews', compact('reviews'));
+    }
+
+    public function admin()
+    {
+        $reviews = Reviews::all();
+        return view('admin-reviews', compact('reviews'));
     }
 
     /**
@@ -28,7 +35,21 @@ class ReviewsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'username' => 'required|string|max:255',
+            'text' => 'required|string',
+            'status' => 'required|string|in:pending,approved,rejected',
+            'spectacle_id' => 'required|exists:spectacles,id',
+        ]);
+
+        Reviews::create([
+            'username' => $data['username'],
+            'text' => $data['text'],
+            'status' => 'pending',
+            'spectacle_id' => $data['spectacle_id'],
+        ]);
+
+        return back()->with('success', 'Отзыв успешно добавлен!');
     }
 
     /**
@@ -52,7 +73,13 @@ class ReviewsController extends Controller
      */
     public function update(Request $request, Reviews $reviews)
     {
-        //
+
+        $data = $request->validate([
+            'status' => 'required|string|in:pending,approved,rejected',
+
+        ]);
+        $reviews->update(['status' => $data['status']]);
+        return redirect('/admin/reviews')->with('success', 'Статус отзыва обновлен!');
     }
 
     /**

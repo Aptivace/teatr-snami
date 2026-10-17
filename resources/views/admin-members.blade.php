@@ -12,8 +12,8 @@
     <aside>
         <a class="logo" href="/">СНАМИ</a>
         <a href="/admin">Афиши</a>
-        <a href="/admin/spectacles" class="on">Репертуар</a>
-        <a href="/admin/members">Состав</a>
+        <a href="/admin/spectacles" >Репертуар</a>
+        <a href="/admin/members" class="on">Состав</a>
         <a href="/admin/rewards">Награды</a>
         <a href="/admin/reviews">Отзывы</a>
         <a href="/" target="_blank">Открыть сайт</a>
@@ -58,8 +58,8 @@
                         <td>{{ $member->role }}</td>
                         <td>
                             <div class="acts">
-                                <a class="btn s g" href="{{ route('admin.members.edit', $member) }}">Изменить</a>
-                                <form method="POST" action="{{ route('admin.members.destroy', $member) }}" onsubmit="return confirm('Удалить участника?')">
+                                <a class="btn s g" href="{{ "/admin/members/$member->id/edit" }}">Изменить</a>
+                                <form method="POST" action="{{ "/admin/members/$member->id/remove" }}" onsubmit="return confirm('Удалить участника?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn s bad">Удалить</button>

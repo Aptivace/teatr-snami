@@ -19,12 +19,18 @@ class MemberController extends Controller
         return view('members', compact('members'));
     }
 
+    public function admin()
+    {
+        $members = Member::all();
+        return view('admin-members', compact('members'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        //
+        return view('admin-members-add');
     }
 
     /**
@@ -81,7 +87,7 @@ class MemberController extends Controller
      */
     public function edit(Member $member)
     {
-        return;
+        return view('admin-members-add', compact('member'));
     }
 
     /**

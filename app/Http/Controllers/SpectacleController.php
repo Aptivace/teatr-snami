@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Member;
 use App\Models\Spectacle;
+use App\Models\SpectaclesMember;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -17,12 +19,20 @@ class SpectacleController extends Controller
         //
     }
 
+    public function admin()
+    {
+        $plays = Spectacle::all();
+        return view('admin-spectacles', compact('plays'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('admin-spectacles-add');
+
+        $members = Member::all();
+        return view('admin-spectacles-add', compact('members'));
     }
 
     /**
@@ -38,6 +48,9 @@ class SpectacleController extends Controller
             'duration' => 'required|integer',
             'images' => 'required|array|min:1',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+            'members' => 'required|array|min:1',
+            'members.*' => 'integer|exists:members,id',
+            'director' => 'required|string',
         ]);
 
         // Массив для путей к картинкам, которые мы сохраним в базу
@@ -66,14 +79,22 @@ class SpectacleController extends Controller
 
         // Сохраняем данные в БД (предположим, у тебя есть модель)
         // Вариант 1: Если у тебя JSON поле в таблице (например, массив путей)
-         Spectacle::create([
+         $newSpectacle = Spectacle::query()->create([
              'name' => $data['name'],
              'desc' => $data['desc'],
              'age' => $data['age'],
+             'director' => $data['director'],
              'genre' => $data['genre'],
              'duration' => $data['duration'],
              'images' => $imagePaths, // Laravel автоматически сериализует в JSON, если указан $casts
-         ]);
+         ])->refresh();
+
+        foreach ($data['members'] as $member) {
+            SpectaclesMember::create([
+                'spectacle_id' => $newSpectacle->id,
+                'member_id' => $member,
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Спектакль создан!');
     }
@@ -91,7 +112,9 @@ class SpectacleController extends Controller
      */
     public function edit(Spectacle $spectacle)
     {
-        //
+        $members = Member::all();
+
+        return view('admin-spectacles-add', compact('spectacle', 'members'));
     }
 
     /**

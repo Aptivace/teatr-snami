@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ isset($play) ? 'Редактировать спектакль' : 'Новый спектакль' }} — СНАМИ</title>
+    <title>{{ isset($spectacle) ? 'Редактировать спектакль' : 'Новый спектакль' }} — СНАМИ</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&family=Newsreader:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 </head>
@@ -25,7 +25,7 @@
     </aside>
     <main>
         <div class="top">
-            <h1>{{ isset($play) ? 'Редактировать спектакль' : 'Новый спектакль' }}</h1>
+            <h1>{{ isset($spectacle) ? 'Редактировать спектакль' : 'Новый спектакль' }}</h1>
             <a class="btn g" href="/admin/spectacles">К списку</a>
         </div>
 
@@ -40,65 +40,50 @@
             </div>
         @endif
 
-        {{-- Динамический action и метод (POST для создания, PUT для обновления) --}}
+        {{-- Динамический action и метод (POST для создания, PATCH для обновления) --}}
         <form class="panel" method="POST" enctype="multipart/form-data"
-              action="{{ isset($play) ? "/admin/spectacles/$play->id" : '/admin/spectacles' }}">
+              action="{{ isset($spectacle) ? "/admin/spectacles/{$spectacle->id}" : '/admin/spectacles' }}">
             @csrf
-            @if(isset($play))
+            @if(isset($spectacle))
                 @method('PATCH')
             @endif
 
             <div class="f">
                 <div class="full">
                     <label for="ti">Название</label>
-                    <input id="ti" name="title" value="{{ old('name', $play->title ?? '') }}" required>
+                    <input id="ti" name="name" value="{{ old('name', $spectacle->name ?? '') }}" required>
                 </div>
                 <div>
                     <label for="g">Жанр</label>
-                    <input id="g" name="genre" value="{{ old('genre', $play->genre ?? '') }}">
+                    <input id="g" name="genre" value="{{ old('genre', $spectacle->genre ?? '') }}" required>
                 </div>
                 <div>
                     <label for="di">Режиссёр</label>
-                    <input id="di" name="director" value="{{ old('director', $play->director ?? '') }}">
+                    <input id="di" name="director" value="{{ old('director', $spectacle->director ?? '') }}">
                 </div>
                 <div>
                     <label for="du">Длительность, мин</label>
-                    <input id="du" type="number" min="1" name="duration" value="{{ old('duration', $play->duration ?? '') }}">
+                    <input id="du" type="number" min="1" name="duration" value="{{ old('duration', $spectacle->duration ?? '') }}" required>
                 </div>
                 <div>
-                    <label for="ag">Возраст</label>
-                    <select id="ag" name="age">
-                        @foreach(['0+', '6+', '12+', '16+', '18+'] as $ageOption)
-                            <option value="{{ $ageOption }}" {{ old('age', $play->age ?? '') == $ageOption ? 'selected' : '' }}>
-                                {{ $ageOption }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <label for="ag">Возраст (например, 16+)</label>
+                    <input id="ag" name="age" value="{{ old('age', $spectacle->age ?? '') }}" required>
                 </div>
                 <div>
-                    <label for="pe">Год премьеры</label>
-                    <input id="pe" type="number" name="premiere_year" value="{{ old('premiere_year', $play->premiere_year ?? '') }}">
-                </div>
-                <div>
-                    <label for="im">Изображение</label>
-                    <input id="im" type="file" name="image" accept="image/*">
+                    <label for="im">Изображения <small>(можно выбрать несколько)</small></label>
+                    <input id="im" type="file" name="images[]" accept="image/*" multiple required>
                 </div>
                 <div class="full">
-                    <label for="sh">Краткое описание</label>
-                    <input id="sh" name="excerpt" maxlength="200" value="{{ old('excerpt', $play->excerpt ?? '') }}">
-                </div>
-                <div class="full">
-                    <label for="ds">Полное описание</label>
-                    <textarea id="ds" name="description">{{ old('description', $play->description ?? '') }}</textarea>
+                    <label for="ds">Описание</label>
+                    <textarea id="ds" name="desc" rows="5" required>{{ old('desc', $spectacle->desc ?? '') }}</textarea>
                 </div>
                 <div class="full">
                     <label for="ca">В ролях <small>(Ctrl/Cmd — выбрать несколько)</small></label>
                     <select id="ca" name="members[]" multiple size="6">
-                        {{-- Пример генерации выпадающего списка участников (если передаешь $members из контроллера) --}}
                         @isset($members)
                             @foreach($members as $member)
                                 <option value="{{ $member->id }}"
-                                    {{ (isset($play) && $play->members->contains($member->id)) ? 'selected' : '' }}>
+                                    {{ (isset($spectacle) && $spectacle->members->contains($member->id)) || (is_array(old('members')) && in_array($member->id, old('members'))) ? 'selected' : '' }}>
                                     {{ $member->name }}
                                 </option>
                             @endforeach

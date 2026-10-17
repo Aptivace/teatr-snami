@@ -50,11 +50,11 @@
                     <tr>
                         <td>{{ $play->name }}</td>
                         <td>{{ $play->genre }}</td>
-                        <td>{{ $play->title }}</td>
+                        <td>{{ $play->director }}</td>
                         <td>{{ $play->age }}</td>
                         <td>
                             <div class="acts">
-                                <a class="btn s g" href="{{ route('admin.plays.edit', $play) }}">Изменить</a>
+                                <a class="btn s g" href="{{ "/admin/spectacles/$play->id/edit" }}">Изменить</a>
                                 <form method="POST" action="/admin/spectacles/{{$play->id}}/remove" onsubmit="return confirm('Удалить спектакль?')">
                                     @csrf
                                     @method('DELETE')

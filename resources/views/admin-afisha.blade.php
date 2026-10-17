@@ -12,8 +12,8 @@
 <div class="app">
     <aside>
         <a class="logo" href="/">СНАМИ</a>
-        <a href="/admin">Афиши</a>
-        <a href="/admin/spectacles" class="on">Репертуар</a>
+        <a href="/admin" class="on">Афиши</a>
+        <a href="/admin/spectacles" >Репертуар</a>
         <a href="/admin/members">Состав</a>
         <a href="/admin/rewards">Награды</a>
         <a href="/admin/reviews">Отзывы</a>

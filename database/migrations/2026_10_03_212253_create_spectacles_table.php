@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer("age");
             $table->string("genre");
             $table->integer("duration");
+            $table->string("director");
             $table->timestamps();
         });
     }

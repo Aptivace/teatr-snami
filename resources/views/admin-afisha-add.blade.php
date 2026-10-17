@@ -12,8 +12,8 @@
 <div class="app">
     <aside>
         <a class="logo" href="/">СНАМИ</a>
-        <a href="/admin">Афиши</a>
-        <a href="/admin/spectacles" class="on">Репертуар</a>
+        <a href="/admin" class="on">Афиши</a>
+        <a href="/admin/spectacles">Репертуар</a>
         <a href="/admin/members">Состав</a>
         <a href="/admin/rewards">Награды</a>
         <a href="/admin/reviews">Отзывы</a>
@@ -40,7 +40,7 @@
             </div>
         @endif
 
-        <form class="panel" method="POST" action="{{ isset($afisha) ? "/admin/afishes/$afisha->id" : "/admin/afishes" }}">
+        <form class="panel" method="POST" action="{{ isset($afisha) ? "/admin/afishes/$afisha->id/edit" : "/admin/afishes" }}">
             @csrf
             @if(isset($afisha))
                 @method('PATCH')
