@@ -36,7 +36,9 @@
 
                 @foreach($repertuar as $play)
                     <a class="card" href="/repertuar/{{$play->id}}">
-                        <div class="ph w"></div>
+                        <div class="ph w">
+                            <img src="{{asset("storage/" . $play->images[0])}}" alt="{{$play->name}}">
+                        </div>
                         <div class="b"><span class="tag">{{$play->genre}}, {{$play->age}}+</span>
                             <h3>{{$play->name}}</h3><span class="mut">{{$play->desc}}</span></div>
                     </a>

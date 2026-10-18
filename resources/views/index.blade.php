@@ -46,7 +46,7 @@
             @foreach($afishes as $afisha)
                 <a class="date" href="/afisha/{{$afisha->id}}">
                     <div class="d">12 окт</div>
-                    <div class="i"><b>{{$afisha->spectace->name}}</b><span class="mut">{{$afisha->city}}, {{$afisha->time}} · {{$afisha->address}}</span></div>
+                    <div class="i"><b>{{$afisha->spectacle->name}}</b><span class="mut">{{$afisha->city}}, {{$afisha->time}} · {{$afisha->address}}</span></div>
                     <span class="btn">Билеты</span></a>
             @endforeach
 
@@ -60,10 +60,12 @@
 
 
                 @foreach($repertuar as $play)
-                    <a class="card" href="/repertuar/{{$play->id}}}">
-                        <div class="ph w"></div>
+                    <a class="card" href="/repertuar/{{$play->id}}">
+                        <div class="ph w">
+                            <img src="{{asset('storage/' . $play->images[0])}}" alt="">
+                        </div>
                         <div class="b"><span class="tag">{{$play->genre}}, {{$play->age}}+</span>
-                            <h3>{{$play->name}}</h3><span class="mut">Режиссёр: Имя Фамилия</span></div>
+                            <h3>{{$play->name}}</h3><span class="mut">Режиссёр: {{$play->director}}</span></div>
                     </a>
                 @endforeach
 

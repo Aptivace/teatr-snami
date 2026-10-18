@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AfishaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\RewardController;
 use App\Http\Controllers\SpectacleController;
 use App\Http\Middleware\CheckAdmin;
@@ -11,21 +12,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index']);
 
-Route::get('/afisha', function () {
-    return view('afisha');
-});
+Route::get('/afisha', [AfishaController::class, 'index']);
+Route::get('/afisha/{afisha}', [AfishaController::class, 'show']);
 
-Route::get('/members', function () {
-    return view('members');
-});
+Route::get('/members', [MemberController::class, 'index']);
 
-Route::get('/reviews', function () {
-    return view('reviews');
-});
+Route::get('/reviews', [ReviewsController::class, 'index']);
+Route::post('/reviews', [ReviewsController::class, 'store']);
 
-Route::get('/repertuar', function () {
-    return view('repertoire');
-});
+Route::get('/repertuar', [SpectacleController::class, 'index']);
+Route::get('/repertuar/{play}', [SpectacleController::class, 'show']);
 
 Route::prefix("/admin")->group(function () {
     Route::get('/', [AdminController::class, 'index']);
@@ -62,9 +58,8 @@ Route::prefix("/admin")->group(function () {
         Route::delete('/members/{member}/remove', [MemberController::class, 'destroy']);
 
 
-        Route::get('/reviews', function () {
-            return view('admin-reviews');
-        });
+        Route::get('/reviews', [ReviewsController::class, 'admin']);
+        Route::patch('/reviews/{reviews}', [ReviewsController::class, 'update']);
     });
 });
 

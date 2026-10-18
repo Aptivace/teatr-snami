@@ -13,7 +13,7 @@ class HomeController extends Controller
     //
     public function index()
     {
-        $afishes = Afisha::query()->where(['status' => 'pending'])->get();
+        $afishes = Afisha::query()->where(['status' => 'active'])->get();
 
         $repertuar = Spectacle::all();
 

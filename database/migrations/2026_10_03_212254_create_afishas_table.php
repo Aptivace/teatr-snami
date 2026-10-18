@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string("time");
             $table->string("city");
             $table->integer("price");
+            $table->string("ticket_url");
             $table->string("status")->default("pending");
             $table->foreignIdFor(Spectacle::class, "spectacle_id")->constrained()->cascadeOnDelete();
             $table->timestamps();

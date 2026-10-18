@@ -27,12 +27,14 @@
 <main>
     <section class="sec">
         <div class="wrap split">
-            <div class="ph"></div>
+            <div class="ph">
+                <img src="{{asset('storage/' . $play->images[0])}}" alt="{{$play->name}}">
+            </div>
             <div>
                 <span class="tag">{{$play->genre}}, {{$play->age}}+</span><br><br>
                 <h1 style="font-size:clamp(2rem,5vw,3.4rem)">{{$play->name}}</h1>
                 <div class="facts">
-                    <div><span>Режиссёр</span>Имя Фамилия</div>
+                    <div><span>Режиссёр</span>{{$play->director}}</div>
                     <div><span>Жанр</span>{{$play->genre}}</div>
                     <div><span>Длительность</span>{{$play->duration}}</div>
                     <div><span>Возраст</span>{{$play->age}}+</div>
@@ -48,7 +50,8 @@
             <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">
                 @foreach($actors as $actor)
                     <article class="person">
-                        <div class="ph sq"><img src="{{$actor->image}}" alt="{{$actor->name}}"></div>
+
+                        <div class="ph sq"><img src="{{asset('storage/' . $actor->image)}}" alt="{{$actor->name}}"></div>
                         <h3 style="font-size:1.15rem">{{$actor->name}}</h3><span class="mut">{{$actor->role}}</span></article>
                 @endforeach
             </div>
@@ -67,7 +70,7 @@
             </div>
             <div><h2>Награды спектакля</h2>
                 @foreach($rewards as $reward)
-                    <a href="{{$reward->url}}">
+                    <a href="{{asset('storage/' . $reward->url)}}" target="_blank">
                         <div class="award"><b>{{$reward->name}}</b><span class="mut">{{$reward->year}}, {{$reward->festival_name}}»</span></div>
                     </a>
                 @endforeach

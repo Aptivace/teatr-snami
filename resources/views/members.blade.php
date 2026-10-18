@@ -33,7 +33,7 @@
 
                 @foreach($members as $member)
                     <article class="person">
-                        <div class="ph"><img src="{{$member->image}}" alt="{{$member->name}}"></div>
+                        <div class="ph"><img src="{{asset('storage/' . $member->image)}}" alt="{{$member->name}}"></div>
                         <h3>{{$member->name}}</h3><span class="mut">{{$member->role}}</span></article>
                 @endforeach
 

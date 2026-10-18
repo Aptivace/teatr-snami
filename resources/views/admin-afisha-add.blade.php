@@ -53,7 +53,7 @@
                         <option value="">Выберите спектакль</option>
                         @foreach($spectacles as $spectacle)
                             <option value="{{ $spectacle->id }}" {{ old('spectacle_id', $afisha->spectacle_id ?? '') == $spectacle->id ? 'selected' : '' }}>
-                                {{ $spectacle->title }}
+                                {{ $spectacle->name }}
                             </option>
                         @endforeach
                     </select>
@@ -86,6 +86,10 @@
                         <option value="cancelled" {{ old('status', $afisha->status ?? '') == 'cancelled' ? 'selected' : '' }}>Отменена</option>
                         <option value="completed" {{ old('status', $afisha->status ?? '') == 'completed' ? 'selected' : '' }}>Завершена</option>
                     </select>
+                </div>
+                <div>
+                    <label for="ticket_url">Ссылка на покупку билета</label>
+                    <input type="text" name="ticket_url" id="ticket_url" required value="{{ old('ticket_url', $afisha->ticket_url ?? '') }}">
                 </div>
                 <div class="full">
                     <label for="ds">Описание показа</label>

@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
             $table->string('username');
-            $table->string('text');
+            $table->text('text');
             $table->string('status')->default('pending');
             $table->foreignIdFor(Spectacle::class);
             $table->timestamps();

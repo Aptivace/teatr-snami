@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reviews;
+use App\Models\Spectacle;
 use Illuminate\Http\Request;
 
 class ReviewsController extends Controller
@@ -13,7 +14,8 @@ class ReviewsController extends Controller
     public function index()
     {
         $reviews = Reviews::query()->where(['status' => 'approved'])->get();
-        return view('reviews', compact('reviews'));
+        $repertuar = Spectacle::all();
+        return view('reviews', compact('reviews', 'repertuar'));
     }
 
     public function admin()
@@ -38,7 +40,6 @@ class ReviewsController extends Controller
         $data = $request->validate([
             'username' => 'required|string|max:255',
             'text' => 'required|string',
-            'status' => 'required|string|in:pending,approved,rejected',
             'spectacle_id' => 'required|exists:spectacles,id',
         ]);
 

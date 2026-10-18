@@ -45,7 +45,7 @@
 
                 @forelse($afishes as $afisha)
                     <tr>
-                        <td>{{ $afisha->spectacle->title ?? 'Без спектакля' }}</td>
+                        <td>{{ $afisha->spectacle->name ?? 'Без спектакля' }}</td>
                         <td>{{ \Carbon\Carbon::parse($afisha->date)->format('d.m.Y') }}, {{ $afisha->time }}</td>
                         <td>{{ $afisha->city }}, {{ $afisha->address }}</td>
                         <td>

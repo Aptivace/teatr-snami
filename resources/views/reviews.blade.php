@@ -34,30 +34,11 @@
 
                     @foreach($reviews as $review)
                         <figure class="quote" style="margin:0"><p>{{$review->text}}</p>
-                            <figcaption class="mut">{{$review->name}} · <a href="/repertuar/{{$review->spectacle->id}}">{{$review->spectacle->name}}</a> ·
-                                {{$review->created_at}}
+                            <figcaption class="mut">{{$review->username}} · <a href="/repertuar/{{$review->spectacle->id}}">{{$review->spectacle->name}}</a> ·
+                                {{$review->created_at->format('d.m.Y')}}
                             </figcaption>
                         </figure>
                     @endforeach
-
-
-
-
-                    <figure class="quote" style="margin:0"><p>Текст отзыва зрителя о спектакле.</p>
-                        <figcaption class="mut">Имя зрителя · <a href="play.html">Название спектакля</a> · 01.10.2026
-                        </figcaption>
-                    </figure>
-
-                    <figure class="quote" style="margin:0"><p>Текст отзыва зрителя о спектакле.</p>
-                        <figcaption class="mut">Имя зрителя · <a href="play.html">Название спектакля</a> · 01.10.2026
-                        </figcaption>
-                    </figure>
-
-                    <figure class="quote" style="margin:0"><p>Текст отзыва зрителя о спектакле.</p>
-                        <figcaption class="mut">Имя зрителя · <a href="play.html">Название спектакля</a> · 01.10.2026
-                        </figcaption>
-                    </figure>
-
                     <div class="pg"></div>
                 </div>
                 <form class="quote" method="POST" action="/reviews">
@@ -65,8 +46,8 @@
 
                     <h3>Оставить отзыв</h3>
                     <p class="mut">Отзыв появится на сайте после проверки.</p>
-                    <label for="n">Ваше имя</label><input id="n" name="name" required value="">
-                    <label for="p">Спектакль</label><select id="p" name="play_id">
+                    <label for="n">Ваше имя</label><input id="n" name="username" required value="">
+                    <label for="p">Спектакль</label><select id="p" name="spectacle_id">
                         <option value="">Не выбран</option>
                         @foreach($repertuar as $play)
                             <option value="{{$play->id}}">{{$play->name}}</option>

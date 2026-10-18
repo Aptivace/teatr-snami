@@ -45,6 +45,7 @@ class AfishaController extends Controller
             'time' => 'required|string|max:50', // Например: "19:00"
             'price' => 'required|integer|min:0',
             'desc' => 'nullable|string',
+            'ticket_url' => 'required|string|max:255',
             'status' => 'required|string|in:pending,active,cancelled,completed', // Ограничиваем допустимые статусы
         ]);
 
@@ -58,7 +59,14 @@ class AfishaController extends Controller
      */
     public function show(Afisha $afisha)
     {
-        //
+        $otherDates = Afisha::where('spectacle_id', $afisha->spectacle_id)
+            ->where('id', '!=', $afisha->id)
+            ->where('date', '>=', now())
+            ->orderBy('date')
+            ->limit(5)
+            ->get();
+
+        return view('afisha-item', compact('afisha', 'otherDates'));
     }
 
     /**

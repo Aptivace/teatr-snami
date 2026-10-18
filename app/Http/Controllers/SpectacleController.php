@@ -16,7 +16,8 @@ class SpectacleController extends Controller
      */
     public function index()
     {
-        //
+        $repertuar = Spectacle::all();
+        return view('repertoire', compact('repertuar'));
     }
 
     public function admin()
@@ -102,9 +103,13 @@ class SpectacleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Spectacle $spectacle)
+    public function show(Spectacle $play)
     {
-        //
+        $actors = $play->members;
+        $rewards = $play->rewards;
+        $afishes = $play->afishes;
+
+        return view('repertoire-item', compact('play', 'actors', 'rewards', 'afishes'));
     }
 
     /**
