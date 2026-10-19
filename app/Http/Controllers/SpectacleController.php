@@ -107,7 +107,7 @@ class SpectacleController extends Controller
     {
         $actors = $play->members;
         $rewards = $play->rewards;
-        $afishes = $play->afishes;
+        $afishes = $play->afishes()->where(['status' => 'active'])->get();
 
         return view('repertoire-item', compact('play', 'actors', 'rewards', 'afishes'));
     }

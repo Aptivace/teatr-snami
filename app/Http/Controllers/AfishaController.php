@@ -11,14 +11,28 @@ class AfishaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $pending_afishes = Afisha::query()->where("status", "pending")->get();
+        $query = Afisha::query()->where('status', 'pending'); // или 'active', в зависимости от ваших статусов
 
-        $expired_afishes = Afisha::query()->where("status", "expired")->get();
+        // Если выбран конкретный месяц через фильтр
+        if ($request->has('month')) {
+            $query->whereMonth('date', $request->month);
+        }
 
-        return view('afisha', compact('pending_afishes', 'expired_afishes'));
+        $pending_afishes = $query->get();
 
+        $expired_afishes = Afisha::query()->where("status", "completed")->get();
+
+        // Получаем список месяцев (числовые значения, например: [10, 11, 12]), в которых есть актуальные афиши
+        $availableMonths = Afisha::query()
+            ->where('status', 'pending')
+            ->selectRaw('MONTH(date) as month')
+            ->distinct()
+            ->pluck('month')
+            ->toArray();
+
+        return view('afisha', compact('pending_afishes', 'expired_afishes', 'availableMonths'));
     }
 
     /**

@@ -29,8 +29,6 @@
         <div class="wrap">
             <h1>Репертуар</h1>
             <p class="lead">Спектакли, которые мы играем сейчас.</p><br>
-            <div class="chips"><a class="chip on" href="?">Все</a><a class="chip" href="?genre=drama">Драма</a><a
-                    class="chip" href="?genre=comedy">Комедия</a><a class="chip" href="?genre=kids">Детям</a></div>
             <div class="grid">
 
 

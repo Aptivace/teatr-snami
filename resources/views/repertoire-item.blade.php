@@ -62,7 +62,7 @@
             <div id="dates"><h2>Ближайшие показы</h2>
                 @foreach($afishes as $afisha)
                     <a class="date" href="/afisha/{{$afisha->id}}">
-                        <div class="d">12 окт</div>
+                        <div class="d">{{ \Carbon\Carbon::parse($afisha->date)->translatedFormat('d M') }}</div>
                         <div class="i"><b>{{$afisha->time}}</b><span class="mut">{{$afisha->city}}</span></div>
                         <span class="btn">Билеты</span></a>
                 @endforeach

@@ -18,9 +18,19 @@ class ReviewsController extends Controller
         return view('reviews', compact('reviews', 'repertuar'));
     }
 
-    public function admin()
+    public function admin(Request $request)
     {
-        $reviews = Reviews::all();
+
+        $reviews = Reviews::query();
+        if ($request->has('status')) {
+            $reviews->where(['status' => $request->status]);
+        } else {
+            $reviews->where(['status' => 'pending']);
+        }
+
+        $reviews = $reviews->get();
+
+
         return view('admin-reviews', compact('reviews'));
     }
 

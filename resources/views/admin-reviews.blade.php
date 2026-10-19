@@ -11,11 +11,11 @@
 <div class="app">
     <aside>
         <a class="logo" href="/">СНАМИ</a>
-        <a href="/admin" class="on">Афиши</a>
+        <a href="/admin" >Афиши</a>
         <a href="/admin/spectacles">Репертуар</a>
         <a href="/admin/members">Состав</a>
         <a href="/admin/rewards">Награды</a>
-        <a href="/admin/reviews">Отзывы</a>
+        <a href="/admin/reviews" class="on">Отзывы</a>
         <a href="/" target="_blank">Открыть сайт</a>
 
         <form action="/admin/logout" method="POST" style="display: inline;">

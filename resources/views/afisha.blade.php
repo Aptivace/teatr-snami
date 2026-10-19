@@ -9,7 +9,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href={{asset("css/site.css")}}>
+    <link rel="stylesheet" href="{{ asset('css/site.css') }}">
 </head>
 <body>
 <header>
@@ -28,40 +28,39 @@
     <section class="sec">
         <div class="wrap">
             <h1>Афиша</h1><br>
-            <div class="chips"><a class="chip on" href="?">Все</a><a class="chip" href="?month=10">Октябрь</a><a
-                    class="chip" href="?month=11">Ноябрь</a><a class="chip" href="?month=12">Декабрь</a></div>
+            <div class="chips">
+                @if(count($availableMonths) > 0)
+                    <a class="chip {{ !request('month') ? 'on' : '' }}" href="/afisha">Все</a>
 
+                    @foreach($availableMonths as $monthNumber)
+                        @php
+                            // Получаем название месяца на русском языке через Carbon
+                            $monthName = \Carbon\Carbon::create()->month($monthNumber)->translatedFormat('F');
+                        @endphp
+                        <a class="chip {{ request('month') == $monthNumber ? 'on' : '' }}" href="{{ "/afisha/$monthNumber" }}">
+                            {{ ucfirst($monthName) }}
+                        </a>
+                    @endforeach
+                @endif
+            </div>
 
-            <a class="date" href="afisha-item.html">
-                <div class="d">12 окт</div>
-                <div class="i"><b>Название спектакля</b><span
-                        class="mut">Пятница, 19:00 · Основная сцена · от 800 ₽</span></div>
-                <span class="btn">Подробнее</span></a>
-
-            <a class="date" href="afisha-item.html">
-                <div class="d">12 окт</div>
-                <div class="i"><b>Название спектакля</b><span
-                        class="mut">Пятница, 19:00 · Основная сцена · от 800 ₽</span></div>
-                <span class="btn">Подробнее</span></a>
-
-            <a class="date" href="afisha-item.html">
-                <div class="d">12 окт</div>
-                <div class="i"><b>Название спектакля</b><span
-                        class="mut">Пятница, 19:00 · Основная сцена · от 800 ₽</span></div>
-                <span class="btn">Подробнее</span></a>
-
-            <a class="date" href="afisha-item.html">
-                <div class="d">12 окт</div>
-                <div class="i"><b>Название спектакля</b><span
-                        class="mut">Пятница, 19:00 · Основная сцена · от 800 ₽</span></div>
-                <span class="btn">Подробнее</span></a>
-
-            <a class="date" href="afisha-item.html">
-                <div class="d">12 окт</div>
-                <div class="i"><b>Название спектакля</b><span
-                        class="mut">Пятница, 19:00 · Основная сцена · от 800 ₽</span></div>
-                <span class="btn">Подробнее</span></a>
-
+            {{-- Вывод актуальных афиш --}}
+            @forelse($pending_afishes as $afisha)
+                <a class="date" href="{{ "/afisha/$afisha->id" }}">
+                    <div class="d">
+                        {{ \Carbon\Carbon::parse($afisha->date)->translatedFormat('d M') }}
+                    </div>
+                    <div class="i">
+                        <b>{{ $afisha->spectacle->title ?? 'Название спектакля' }}</b>
+                        <span class="mut">
+                            {{ \Carbon\Carbon::parse($afisha->date)->translatedFormat('l') }}, {{ $afisha->time }} · {{ $afisha->address }} · от {{ $afisha->price }} ₽
+                        </span>
+                    </div>
+                    <span class="btn">Подробнее</span>
+                </a>
+            @empty
+                <p>На ближайшее время афиш нет.</p>
+            @endforelse
 
             <div class="pg"></div>
         </div>
@@ -69,28 +68,26 @@
 
     <section class="sec alt">
         <div class="wrap">
-            <div class="sec-h"><h2>Недавние события</h2><a href="reviews.html">Отзывы зрителей</a></div>
+            <div class="sec-h">
+                <h2>Недавние события</h2>
+                <a href="/reviews">Отзывы зрителей</a>
+            </div>
             <div class="grid">
-                <a class="card past" href="afisha-item.html">
-                    <div class="ph w"></div>
-                    <div class="b"><span class="tag">Состоялось 28 сентября</span>
-                        <h3>Название спектакля</h3><span class="mut">Основная сцена</span></div>
-                </a>
-                <a class="card past" href="afisha-item.html">
-                    <div class="ph w"></div>
-                    <div class="b"><span class="tag">Состоялось 21 сентября</span>
-                        <h3>Название спектакля</h3><span class="mut">Малая сцена</span></div>
-                </a>
-                <a class="card past" href="afisha-item.html">
-                    <div class="ph w"></div>
-                    <div class="b"><span class="tag">Состоялось 14 сентября</span>
-                        <h3>Название спектакля</h3><span class="mut">Основная сцена</span></div>
-                </a>
-                <a class="card past" href="afisha-item.html">
-                    <div class="ph w"></div>
-                    <div class="b"><span class="tag">Состоялось 7 сентября</span>
-                        <h3>Название спектакля</h3><span class="mut">Основная сцена</span></div>
-                </a>
+                {{-- Вывод прошедших афиш --}}
+                @forelse($expired_afishes as $expired)
+                    <a class="card past" href="{{ "/afisha/$expired->id" }}">
+                        <div class="ph w">
+                            <img src="{{asset('storage/' . $expired->spectacle->images[0])}}" alt="{{$expired->spectacle->name}}">
+                        </div>
+                        <div class="b">
+                            <span class="tag">Состоялось {{ \Carbon\Carbon::parse($expired->date)->translatedFormat('d F') }}</span>
+                            <h3>{{ $expired->spectacle->title ?? 'Название спектакля' }}</h3>
+                            <span class="mut">{{ $expired->address }}</span>
+                        </div>
+                    </a>
+                @empty
+                    <p>Прошедших событий пока нет.</p>
+                @endforelse
             </div>
         </div>
     </section>
@@ -98,12 +95,20 @@
 <footer>
     <div class="wrap">
         <div class="g">
-            <div><a class="logo" href="/">Театр СНАМИ</a>
-                <p>Театральный союз. Играем живые спектакли для тех, кто любит театр.</p></div>
-            <div><a href="/afisha">Афиша</a><a href="/repertuar">Репертуар</a><a href="/members">Состав</a><a
-                    href="/reviews">Отзывы</a></div>
-            <div><a href="tel:+70000000000">+7 000 000-00-00</a><a
-                    href="mailto:info@snami.example">info@snami.example</a></div>
+            <div>
+                <a class="logo" href="/">Театр СНАМИ</a>
+                <p>Театральный союз. Играем живые спектакли для тех, кто любит театр.</p>
+            </div>
+            <div>
+                <a href="/afisha">Афиша</a>
+                <a href="/repertuar">Репертуар</a>
+                <a href="/members">Состав</a>
+                <a href="/reviews">Отзывы</a>
+            </div>
+            <div>
+                <a href="tel:+70000000000">+7 000 000-00-00</a>
+                <a href="mailto:info@snami.example">info@snami.example</a>
+            </div>
         </div>
         <small>© 2026 Театр СНАМИ</small>
     </div>
