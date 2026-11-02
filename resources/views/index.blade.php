@@ -35,7 +35,7 @@
                                                                                         href="/repertuar">Весь
                         репертуар</a></div>
             </div>
-            <div class="ph"><!-- <img src="storage/hero.jpg" alt="Сцена театра СНАМИ"> --></div>
+            <img src="{{asset("assets/silueti.png")}}" alt="Театр СНАМи">
         </div>
     </section>
 
@@ -119,7 +119,7 @@
             <div><a href="/afisha">Афиша</a><a href="/repertuar">Репертуар</a><a href="/members">Состав</a><a
                     href="/reviews">Отзывы</a></div>
             <div><a href="tel:+79172393436">+7 917 239-34-36</a><a
-                    href="mailto:the4thzvonok@gmail.com">the4thzvonok@gmail.com</a></div>
+                    href="mailto:teatrsnami@gmail.com">teatrsnami@gmail.com</a></div>
         </div>
         <small>© 2026 Театр СНАМи</small>
     </div>

@@ -103,7 +103,8 @@
             <div><a href="/afisha">Афиша</a><a href="/repertuar">Репертуар</a><a href="/members">Состав</a><a
                     href="/reviews">Отзывы</a></div>
             <div><a href="tel:+79172393436">+7 917 239-34-36</a><a
-                    href="mailto:the4thzvonok@gmail.com">the4thzvonok@gmail.com</a></div>
+                    href="mailto:teatrsnami@gmail.com">teatrsnami@gmail.com</a></div>
+
         </div>
         <small>© 2026 Театр СНАМи</small>
     </div>
