@@ -15,8 +15,13 @@ class CheckAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $user = auth()->user();
 
-        if (!auth()->user() || auth()->user()->role !== 'admin') return redirect('/admin');
+        if (!$user || $user->role !== 'admin') return redirect('/admin');
+
+        if (!$user->two_factor_confirmed_at && !$request->is('admin/security', 'admin/logout')) {
+            return redirect('/admin/security');
+        }
 
         return $next($request);
     }

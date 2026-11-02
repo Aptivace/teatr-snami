@@ -25,10 +25,16 @@ Route::get('/repertuar/{play}', [SpectacleController::class, 'show']);
 
 Route::prefix("/admin")->group(function () {
     Route::get('/', [AdminController::class, 'index']);
-    Route::post('/login', [AdminController::class, 'login']);
+    Route::post('/login', [AdminController::class, 'login'])->middleware('throttle:5,1');
+
+    Route::get('/2fa', [AdminController::class, 'twoFactorForm']);
+    Route::post('/2fa', [AdminController::class, 'twoFactorVerify'])->middleware('throttle:5,1');
 
     Route::middleware(CheckAdmin::class)->group(function () {
         Route::post("/logout", [AdminController::class, 'logout']);
+
+        Route::get('/security', [AdminController::class, 'security']);
+        Route::post('/security', [AdminController::class, 'enableTwoFactor']);
 
         Route::post('/afishes', [AfishaController::class, 'store']);
         Route::get('/afishes/create', [AfishaController::class, 'create']);

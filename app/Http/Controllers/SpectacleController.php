@@ -44,6 +44,7 @@ class SpectacleController extends Controller
         $data = $request->validate([
             'name' => 'required|string',
             'desc' => 'required|string',
+            'short_desc' => 'nullable|string',
             'age' => 'required|integer',
             'genre' => 'required|string',
             'duration' => 'required|integer',
@@ -83,6 +84,7 @@ class SpectacleController extends Controller
          $newSpectacle = Spectacle::query()->create([
              'name' => $data['name'],
              'desc' => $data['desc'],
+             'short_desc' => $data['short_desc'],
              'age' => $data['age'],
              'director' => $data['director'],
              'genre' => $data['genre'],

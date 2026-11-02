@@ -50,35 +50,39 @@
 
             <div class="f">
                 <div class="full">
-                    <label for="ti">Название</label>
+                    <label for="ti">Название *</label>
                     <input id="ti" name="name" value="{{ old('name', $spectacle->name ?? '') }}" required>
                 </div>
                 <div>
-                    <label for="g">Жанр</label>
+                    <label for="g">Жанр *</label>
                     <input id="g" name="genre" value="{{ old('genre', $spectacle->genre ?? '') }}" required>
                 </div>
                 <div>
-                    <label for="di">Режиссёр</label>
+                    <label for="di">Режиссёр *</label>
                     <input id="di" name="director" value="{{ old('director', $spectacle->director ?? '') }}">
                 </div>
                 <div>
-                    <label for="du">Длительность, мин</label>
+                    <label for="du">Длительность, мин *</label>
                     <input id="du" type="number" min="1" name="duration" value="{{ old('duration', $spectacle->duration ?? '') }}" required>
                 </div>
                 <div>
-                    <label for="ag">Возраст (например, 16+)</label>
+                    <label for="ag">Возраст (например, 16+) *</label>
                     <input id="ag" name="age" value="{{ old('age', $spectacle->age ?? '') }}" required>
                 </div>
                 <div>
-                    <label for="im">Изображения <small>(можно выбрать несколько)</small></label>
+                    <label for="im">Изображения *<small>(можно выбрать несколько)</small></label>
                     <input id="im" type="file" name="images[]" accept="image/*" multiple required>
                 </div>
                 <div class="full">
-                    <label for="ds">Описание</label>
+                    <label for="ds">Описание *</label>
                     <textarea id="ds" name="desc" rows="5" required>{{ old('desc', $spectacle->desc ?? '') }}</textarea>
                 </div>
                 <div class="full">
-                    <label for="ca">В ролях <small>(Ctrl/Cmd — выбрать несколько)</small></label>
+                    <label for="ds">Краткое описание (карточка репертуара)</label>
+                    <textarea id="ds" name="short_desc" rows="5" required>{{ old('desc', $spectacle->short_desc ?? '') }}</textarea>
+                </div>
+                <div class="full">
+                    <label for="ca">В ролях *<small>(Ctrl/Cmd — выбрать несколько)</small></label>
                     <select id="ca" name="members[]" multiple size="6">
                         @isset($members)
                             @foreach($members as $member)

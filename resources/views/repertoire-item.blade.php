@@ -14,11 +14,11 @@
 <body>
 <header>
     <div class="wrap bar">
-        <a class="logo" href="/">СНАМИ</a>
+        <a class="logo" href="/">СНАМи</a>
         <input type="checkbox" id="nv"><label for="nv" class="burger" aria-label="Меню">☰</label>
         <nav>
-            <a href="/afisha" class="on">Афиша</a>
-            <a href="/repertuar">Репертуар</a>
+            <a href="/afisha" >Афиша</a>
+            <a href="/repertuar" class="on">Репертуар</a>
             <a href="/members">Состав</a>
             <a href="/reviews">Отзывы</a>
         </nav>
@@ -81,14 +81,14 @@
 <footer>
     <div class="wrap">
         <div class="g">
-            <div><a class="logo" href="index.html">Театр СНАМИ</a>
+            <div><a class="logo" href="/">Театр СНАМи</a>
                 <p>Театральный союз. Играем живые спектакли для тех, кто любит театр.</p></div>
-            <div><a href="afisha.html">Афиша</a><a href="repertoire.html">Репертуар</a><a href="team.html">Состав</a><a
-                    href="reviews.html">Отзывы</a></div>
-            <div><a href="tel:+70000000000">+7 000 000-00-00</a><a
-                    href="mailto:info@snami.example">info@snami.example</a></div>
+            <div><a href="/afisha">Афиша</a><a href="/repertuar">Репертуар</a><a href="/members">Состав</a><a
+                    href="/reviews">Отзывы</a></div>
+            <div><a href="tel:+79172393436">+7 917 239-34-36</a><a
+                    href="mailto:the4thzvonok@gmail.com">the4thzvonok@gmail.com</a></div>
         </div>
-        <small>© 2026 Театр СНАМИ</small>
+        <small>© 2026 Театр СНАМи</small>
     </div>
 </footer>
 </body>

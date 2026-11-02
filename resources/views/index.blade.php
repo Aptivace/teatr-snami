@@ -14,7 +14,7 @@
 <body>
 <header>
     <div class="wrap bar">
-        <a class="logo" href="/">СНАМИ</a>
+        <a class="logo" href="/">СНАМи</a>
         <input type="checkbox" id="nv"><label for="nv" class="burger" aria-label="Меню">☰</label>
         <nav>
             <a href="/afisha">Афиша</a>
@@ -32,7 +32,7 @@
                 <p class="lead">СНАМИ — театральный союз актёров и режиссёров. Мы играем камерные и большие спектакли и
                     любим, когда зал дышит вместе со сценой.</p>
                 <div class="acts"><a class="btn" href="/afisha">Выбрать спектакль</a><a class="btn ghost"
-                                                                                            href="/repertuar">Весь
+                                                                                        href="/repertuar">Весь
                         репертуар</a></div>
             </div>
             <div class="ph"><!-- <img src="storage/hero.jpg" alt="Сцена театра СНАМИ"> --></div>
@@ -45,8 +45,9 @@
 
             @foreach($afishes as $afisha)
                 <a class="date" href="/afisha/{{$afisha->id}}">
-                    <div class="d">12 окт</div>
-                    <div class="i"><b>{{$afisha->spectacle->name}}</b><span class="mut">{{$afisha->city}}, {{$afisha->time}} · {{$afisha->address}}</span></div>
+                    <div class="d">{{ \Carbon\Carbon::parse($afisha->date)->translatedFormat('d M') }}</div>
+                    <div class="i"><b>{{$afisha->spectacle->name}}</b><span class="mut">{{$afisha->city}}, {{$afisha->time}} · {{$afisha->address}}</span>
+                    </div>
                     <span class="btn">Билеты</span></a>
             @endforeach
 
@@ -84,7 +85,8 @@
 
                 @foreach($rewards as $reward)
                     <div class="award"><b>{{$reward->name}}</b><span
-                            class="mut">{{$reward->year}}, {{$reward->festival_name}} · {{$reward->spectacle ? "«{$reward->spectacle->name}»" : ""}} </span></div>
+                            class="mut">{{$reward->year}}, {{$reward->festival_name}} · {{$reward->spectacle ? "«{$reward->spectacle->name}»" : ""}} </span>
+                    </div>
                     <br>
                 @endforeach
 
@@ -112,14 +114,14 @@
 <footer>
     <div class="wrap">
         <div class="g">
-            <div><a class="logo" href="index.html">Театр СНАМИ</a>
+            <div><a class="logo" href="/">Театр СНАМи</a>
                 <p>Театральный союз. Играем живые спектакли для тех, кто любит театр.</p></div>
-            <div><a href="afisha.html">Афиша</a><a href="repertoire.html">Репертуар</a><a href="team.html">Состав</a><a
-                    href="reviews.html">Отзывы</a></div>
-            <div><a href="tel:+70000000000">+7 000 000-00-00</a><a
-                    href="mailto:info@snami.example">info@snami.example</a></div>
+            <div><a href="/afisha">Афиша</a><a href="/repertuar">Репертуар</a><a href="/members">Состав</a><a
+                    href="/reviews">Отзывы</a></div>
+            <div><a href="tel:+79172393436">+7 917 239-34-36</a><a
+                    href="mailto:the4thzvonok@gmail.com">the4thzvonok@gmail.com</a></div>
         </div>
-        <small>© 2026 Театр СНАМИ</small>
+        <small>© 2026 Театр СНАМи</small>
     </div>
 </footer>
 </body>

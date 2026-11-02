@@ -14,7 +14,7 @@
 <body>
 <header>
     <div class="wrap bar">
-        <a class="logo" href="/">СНАМИ</a>
+        <a class="logo" href="/">СНАМи</a>
         <input type="checkbox" id="nv"><label for="nv" class="burger" aria-label="Меню">☰</label>
         <nav>
             <a href="/afisha" class="on">Афиша</a>
@@ -37,7 +37,8 @@
                             // Получаем название месяца на русском языке через Carbon
                             $monthName = \Carbon\Carbon::create()->month($monthNumber)->translatedFormat('F');
                         @endphp
-                        <a class="chip {{ request('month') == $monthNumber ? 'on' : '' }}" href="{{ "/afisha/$monthNumber" }}">
+                        <a class="chip {{ request('month') == $monthNumber ? 'on' : '' }}"
+                           href="{{ "/afisha/$monthNumber" }}">
                             {{ ucfirst($monthName) }}
                         </a>
                     @endforeach
@@ -77,10 +78,12 @@
                 @forelse($expired_afishes as $expired)
                     <a class="card past" href="{{ "/afisha/$expired->id" }}">
                         <div class="ph w">
-                            <img src="{{asset('storage/' . $expired->spectacle->images[0])}}" alt="{{$expired->spectacle->name}}">
+                            <img src="{{asset('storage/' . $expired->spectacle->images[0])}}"
+                                 alt="{{$expired->spectacle->name}}">
                         </div>
                         <div class="b">
-                            <span class="tag">Состоялось {{ \Carbon\Carbon::parse($expired->date)->translatedFormat('d F') }}</span>
+                            <span
+                                class="tag">Состоялось {{ \Carbon\Carbon::parse($expired->date)->translatedFormat('d F') }}</span>
                             <h3>{{ $expired->spectacle->title ?? 'Название спектакля' }}</h3>
                             <span class="mut">{{ $expired->address }}</span>
                         </div>
@@ -95,22 +98,14 @@
 <footer>
     <div class="wrap">
         <div class="g">
-            <div>
-                <a class="logo" href="/">Театр СНАМИ</a>
-                <p>Театральный союз. Играем живые спектакли для тех, кто любит театр.</p>
-            </div>
-            <div>
-                <a href="/afisha">Афиша</a>
-                <a href="/repertuar">Репертуар</a>
-                <a href="/members">Состав</a>
-                <a href="/reviews">Отзывы</a>
-            </div>
-            <div>
-                <a href="tel:+70000000000">+7 000 000-00-00</a>
-                <a href="mailto:info@snami.example">info@snami.example</a>
-            </div>
+            <div><a class="logo" href="/">Театр СНАМи</a>
+                <p>Театральный союз. Играем живые спектакли для тех, кто любит театр.</p></div>
+            <div><a href="/afisha">Афиша</a><a href="/repertuar">Репертуар</a><a href="/members">Состав</a><a
+                    href="/reviews">Отзывы</a></div>
+            <div><a href="tel:+79172393436">+7 917 239-34-36</a><a
+                    href="mailto:the4thzvonok@gmail.com">the4thzvonok@gmail.com</a></div>
         </div>
-        <small>© 2026 Театр СНАМИ</small>
+        <small>© 2026 Театр СНАМи</small>
     </div>
 </footer>
 </body>
