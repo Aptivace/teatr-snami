@@ -8,6 +8,7 @@ use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\RewardController;
 use App\Http\Controllers\SpectacleController;
 use App\Http\Middleware\CheckAdmin;
+use App\Http\Middleware\NoIndex;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index']);
@@ -23,7 +24,7 @@ Route::post('/reviews', [ReviewsController::class, 'store']);
 Route::get('/repertuar', [SpectacleController::class, 'index']);
 Route::get('/repertuar/{play}', [SpectacleController::class, 'show']);
 
-Route::prefix("/admin")->group(function () {
+Route::prefix("/admin")->middleware(NoIndex::class)->group(function () {
     Route::get('/', [AdminController::class, 'index']);
     Route::post('/login', [AdminController::class, 'login'])->middleware('throttle:5,1');
 
