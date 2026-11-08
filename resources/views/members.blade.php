@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Афиша — Театр СНАМИ</title>
+    <title>Состав — Театр СНАМИ</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -14,7 +14,7 @@
 <body>
 <header>
     <div class="wrap bar">
-        <a class="logo" href="/">СНАМи</a>
+        <a class="logo" href="/">Театр "СНАМи"</a>
         <input type="checkbox" id="nv"><label for="nv" class="burger" aria-label="Меню">☰</label>
         <nav>
             <a href="/afisha">Афиша</a>
@@ -58,7 +58,7 @@
 <footer>
     <div class="wrap">
         <div class="g">
-            <div><a class="logo" href="/">Театр СНАМи</a>
+            <div><a class="logo" href="/">Театр "СНАМи"</a>
                 <p>Театральный союз. Играем живые спектакли для тех, кто любит театр.</p></div>
             <div><a href="/afisha">Афиша</a><a href="/repertuar">Репертуар</a><a href="/members">Состав</a><a
                     href="/reviews">Отзывы</a></div>
