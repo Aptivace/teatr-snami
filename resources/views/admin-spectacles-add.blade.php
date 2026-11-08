@@ -42,7 +42,7 @@
 
         {{-- Динамический action и метод (POST для создания, PATCH для обновления) --}}
         <form class="panel" method="POST" enctype="multipart/form-data"
-              action="{{ isset($spectacle) ? "/admin/spectacles/{$spectacle->id}" : '/admin/spectacles' }}">
+              action="{{ isset($spectacle) ? "/admin/spectacles/{$spectacle->id}/edit" : '/admin/spectacles' }}">
             @csrf
             @if(isset($spectacle))
                 @method('PATCH')
@@ -66,38 +66,195 @@
                     <input id="du" type="number" min="1" name="duration" value="{{ old('duration', $spectacle->duration ?? '') }}" required>
                 </div>
                 <div>
-                    <label for="ag">Возраст (например, 16+) *</label>
+                    <label for="ag">Возраст (число, например 16) *</label>
                     <input id="ag" name="age" value="{{ old('age', $spectacle->age ?? '') }}" required>
                 </div>
                 <div>
-                    <label for="im">Изображения *<small>(можно выбрать несколько)</small></label>
-                    <input id="im" type="file" name="images[]" accept="image/*" multiple required>
+                    <label for="im">Изображения {{ isset($spectacle) ? '' : '*' }}
+                        <small>(первое — главное, порядок можно менять)</small></label>
+                    <input id="im" type="file" name="images[]" accept="image/*" multiple
+                        {{ isset($spectacle) ? '' : 'required' }}>
+                </div>
+                <div class="full">
+                    <ul id="img-prev" class="img-prev"></ul>
                 </div>
                 <div class="full">
                     <label for="ds">Описание *</label>
-                    <textarea id="ds" name="desc" rows="5" required>{{ old('desc', $spectacle->desc ?? '') }}</textarea>
+                    <textarea id="ds" name="desc" rows="10" required>{{ old('desc', $spectacle->desc ?? '') }}</textarea>
+                    <small style="display:block;margin:-10px 0 18px">
+                        Пустая строка — новый абзац. Стихи: каждую строку начинай со знака «&gt;»,
+                        строка с одним «&gt;» — пропуск между строфами.
+                    </small>
                 </div>
                 <div class="full">
                     <label for="ds">Краткое описание (карточка репертуара)</label>
-                    <textarea id="ds" name="short_desc" rows="5" required>{{ old('desc', $spectacle->short_desc ?? '') }}</textarea>
+                    <textarea id="ds" name="short_desc" rows="5">{{ old('desc', $spectacle->short_desc ?? '') }}</textarea>
                 </div>
+                @php
+                    $selectedIds = collect(old('members', isset($spectacle) ? $spectacle->members->pluck('id')->all() : []))
+                        ->map(fn ($id) => (int) $id)->all();
+                @endphp
+
                 <div class="full">
-                    <label for="ca">В ролях *<small>(Ctrl/Cmd — выбрать несколько)</small></label>
-                    <select id="ca" name="members[]" multiple size="6">
-                        @isset($members)
-                            @foreach($members as $member)
-                                <option value="{{ $member->id }}"
-                                    {{ (isset($spectacle) && $spectacle->members->contains($member->id)) || (is_array(old('members')) && in_array($member->id, old('members'))) ? 'selected' : '' }}>
-                                    {{ $member->name }}
-                                </option>
-                            @endforeach
-                        @endisset
-                    </select>
+                    <label>В ролях</label>
+                    <div class="pick">
+                        <div class="pick-col">
+                            <div class="pick-h">Все актёры</div>
+                            <input type="search" id="pick-search" placeholder="Поиск по имени…" autocomplete="off">
+                            <ul id="pick-available" class="pick-list">
+                                @foreach(($members ?? []) as $member)
+                                    @unless(in_array($member->id, $selectedIds))
+                                        <li class="pick-item" data-name="{{ mb_strtolower($member->name) }}">
+                                            <span>{{ $member->name }}</span>
+                                            <button type="button" class="btn s ok add" data-act="add">Добавить</button>
+                                            <button type="button" class="btn s bad rm" data-act="remove">Убрать</button>
+                                            <input type="hidden" name="members[]" value="{{ $member->id }}" disabled>
+                                        </li>
+                                    @endunless
+                                @endforeach
+                            </ul>
+                            <p class="pick-empty" id="pick-empty-available" hidden>Все актёры выбраны</p>
+                        </div>
+
+                        <div class="pick-col">
+                            <div class="pick-h">Выбранные актёры <span id="pick-count"></span></div>
+                            <ul id="pick-selected" class="pick-list">
+                                @foreach(($members ?? []) as $member)
+                                    @if(in_array($member->id, $selectedIds))
+                                        <li class="pick-item" data-name="{{ mb_strtolower($member->name) }}">
+                                            <span>{{ $member->name }}</span>
+                                            <button type="button" class="btn s ok add" data-act="add">Добавить</button>
+                                            <button type="button" class="btn s bad rm" data-act="remove">Убрать</button>
+                                            <input type="hidden" name="members[]" value="{{ $member->id }}">
+                                        </li>
+                                    @endif
+                                @endforeach
+                            </ul>
+                            <p class="pick-empty" id="pick-empty-selected" hidden>Пока никого не выбрано</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <button class="btn" type="submit">Сохранить спектакль</button>
         </form>
     </main>
 </div>
+
+<script>
+    (() => {
+        const input = document.getElementById('im');
+        const list = document.getElementById('img-prev');
+        const urls = new WeakMap();
+        let files = [];
+
+        const urlOf = (f) => {
+            if (!urls.has(f)) urls.set(f, URL.createObjectURL(f));
+            return urls.get(f);
+        };
+
+        const sync = () => {
+            const dt = new DataTransfer();
+            files.forEach((f) => dt.items.add(f));
+            input.files = dt.files;   // именно это уйдёт на сервер, в этом порядке
+            render();
+        };
+
+        const render = () => {
+            list.innerHTML = '';
+            files.forEach((f, i) => {
+                const li = document.createElement('li');
+                li.className = 'img-prev-item';
+                li.innerHTML = `
+                    <img src="${urlOf(f)}" alt="">
+                    ${i === 0 ? '<span class="img-main">Главное</span>' : ''}
+                    <div class="img-ctl">
+                        <button type="button" data-act="left" data-i="${i}" ${i === 0 ? 'disabled' : ''} aria-label="Левее">←</button>
+                        <button type="button" data-act="del" data-i="${i}" aria-label="Убрать">✕</button>
+                        <button type="button" data-act="right" data-i="${i}" ${i === files.length - 1 ? 'disabled' : ''} aria-label="Правее">→</button>
+                    </div>`;
+                list.appendChild(li);
+            });
+        };
+
+        // новые выбранные файлы добавляем к уже выбранным, а не заменяем
+        input.addEventListener('change', () => {
+            const same = (a, b) => a.name === b.name && a.size === b.size && a.lastModified === b.lastModified;
+            [...input.files].forEach((f) => {
+                if (!files.some((x) => same(x, f))) files.push(f);
+            });
+            sync();
+        });
+
+        list.addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-act]');
+            if (!btn) return;
+            const i = Number(btn.dataset.i);
+
+            if (btn.dataset.act === 'del') files.splice(i, 1);
+            if (btn.dataset.act === 'left' && i > 0) [files[i - 1], files[i]] = [files[i], files[i - 1]];
+            if (btn.dataset.act === 'right' && i < files.length - 1) [files[i + 1], files[i]] = [files[i], files[i + 1]];
+
+            sync();
+        });
+    })();
+</script>
+
+
+<script>
+    (() => {
+        const available = document.getElementById('pick-available');
+        const selected = document.getElementById('pick-selected');
+        const search = document.getElementById('pick-search');
+        const count = document.getElementById('pick-count');
+        const emptyA = document.getElementById('pick-empty-available');
+        const emptyS = document.getElementById('pick-empty-selected');
+
+        const sortList = (list) => {
+            [...list.children]
+                .sort((a, b) => a.dataset.name.localeCompare(b.dataset.name, 'ru'))
+                .forEach((li) => list.appendChild(li));
+        };
+
+        const applyFilter = () => {
+            const q = search.value.trim().toLowerCase();
+            [...available.children].forEach((li) => {
+                li.hidden = q !== '' && !li.dataset.name.includes(q);
+            });
+        };
+
+        const refresh = () => {
+            const n = selected.children.length;
+            count.textContent = n ? `(${n})` : '';
+            emptyS.hidden = n > 0;
+            emptyA.hidden = available.children.length > 0;
+        };
+
+        document.querySelector('.pick').addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-act]');
+            if (!btn) return;
+
+            const li = btn.closest('.pick-item');
+            const toSelected = btn.dataset.act === 'add';
+
+            li.querySelector('input[name="members[]"]').disabled = !toSelected;
+            li.hidden = false;
+            (toSelected ? selected : available).appendChild(li);
+            sortList(toSelected ? selected : available);
+
+            applyFilter();
+            refresh();
+        });
+
+        search.addEventListener('input', applyFilter);
+        // Enter в поиске не должен отправлять форму
+        search.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') e.preventDefault();
+        });
+
+        sortList(available);
+        sortList(selected);
+        refresh();
+    })();
+</script>
 </body>
 </html>

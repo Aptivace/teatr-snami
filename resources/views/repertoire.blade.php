@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Афиша — Театр СНАМИ</title>
+    <title>Репертуар — Театр СНАМИ</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -35,7 +35,7 @@
                 @foreach($repertuar as $play)
                     <a class="card" href="/repertuar/{{$play->id}}">
                         <div class="ph w">
-                            <img src="{{asset("storage/" . $play->images[0])}}" alt="{{$play->name}}">
+                            <img src="{{asset("storage/" . $play->images[1])}}" alt="{{$play->name}}">
                         </div>
                         <div class="b"><span class="tag">{{$play->genre}}, {{$play->age}}+</span>
                             <h3>{{$play->name}}</h3><span class="mut">{{$play->short_desc}}</span></div>

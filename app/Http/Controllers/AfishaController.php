@@ -13,7 +13,7 @@ class AfishaController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Afisha::query()->where('status', 'pending'); // или 'active', в зависимости от ваших статусов
+        $query = Afisha::query()->where('status', 'active'); // или 'active', в зависимости от ваших статусов
 
         // Если выбран конкретный месяц через фильтр
         if ($request->has('month')) {
@@ -26,7 +26,7 @@ class AfishaController extends Controller
 
         // Получаем список месяцев (числовые значения, например: [10, 11, 12]), в которых есть актуальные афиши
         $availableMonths = Afisha::query()
-            ->where('status', 'pending')
+            ->where('status', 'active')
             ->selectRaw('MONTH(date) as month')
             ->distinct()
             ->pluck('month')

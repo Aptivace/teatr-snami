@@ -30,14 +30,28 @@
             <h1>Состав</h1>
             <p class="lead">Актёры, режиссёры и команда, которая делает спектакли.</p><br>
             <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">
-
                 @foreach($members as $member)
-                    <article class="person">
-                        <div class="ph"><img src="{{asset('storage/' . $member->image)}}" alt="{{$member->name}}"></div>
-                        <h3>{{$member->name}}</h3><span class="mut">{{$member->role}}</span></article>
+                    <article class="person" data-member="m{{ $member->id }}" tabindex="0" role="button"
+                             aria-label="Подробнее: {{ $member->name }}">
+                        <div class="ph"><img src="{{ asset('storage/' . $member->image) }}" alt="{{ $member->name }}"></div>
+                        <h3>{{ $member->name }}</h3><span class="mut">{{ $member->role }}</span>
+                    </article>
                 @endforeach
-
             </div>
+
+            @foreach($members as $member)
+                <dialog class="mdlg" id="m{{ $member->id }}" aria-label="{{ $member->name }}">
+                    <button type="button" class="mdlg-close" aria-label="Закрыть">✕</button>
+                    <img src="{{ asset('storage/' . $member->image) }}" alt="{{ $member->name }}" loading="lazy">
+                    <div class="mdlg-body">
+                        <h2>{{ $member->name }}</h2>
+                        <span class="mut">{{ $member->role }}</span>
+                        @if($member->desc)
+                            <div class="desc">{{ \App\Support\Text::rich($member->desc) }}</div>
+                        @endif
+                    </div>
+                </dialog>
+            @endforeach
         </div>
     </section>
 </main>
@@ -55,5 +69,30 @@
         <small>© 2026 Театр СНАМи</small>
     </div>
 </footer>
+
+<script>
+    (() => {
+        document.querySelectorAll('[data-member]').forEach((card) => {
+            const dlg = document.getElementById(card.dataset.member);
+            const open = () => dlg.showModal();
+
+            card.addEventListener('click', open);
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    open();
+                }
+            });
+        });
+
+        document.querySelectorAll('dialog.mdlg').forEach((dlg) => {
+            dlg.querySelector('.mdlg-close').addEventListener('click', () => dlg.close());
+            // клик по затемнённому фону закрывает
+            dlg.addEventListener('click', (e) => {
+                if (e.target === dlg) dlg.close();
+            });
+        });
+    })();
+</script>
 </body>
 </html>

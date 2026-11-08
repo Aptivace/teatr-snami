@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Афиша — Театр СНАМИ</title>
+    <title>Главная — Театр СНАМИ</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -14,7 +14,7 @@
 <body>
 <header>
     <div class="wrap bar">
-        <a class="logo" href="/">СНАМи</a>
+        <a class="logo" href="/">Театр "СНАМи"</a>
         <input type="checkbox" id="nv"><label for="nv" class="burger" aria-label="Меню">☰</label>
         <nav>
             <a href="/afisha">Афиша</a>
@@ -29,7 +29,7 @@
         <div class="wrap g">
             <div>
                 <h1>Театр, который говорит с вами</h1>
-                <p class="lead">СНАМИ — театральный союз актёров и режиссёров. Мы играем камерные и большие спектакли и
+                <p class="lead">"СНАМи" — театральный союз актёров и режиссёров. Мы играем камерные и большие спектакли и
                     любим, когда зал дышит вместе со сценой.</p>
                 <div class="acts"><a class="btn" href="/afisha">Выбрать спектакль</a><a class="btn ghost"
                                                                                         href="/repertuar">Весь
@@ -63,7 +63,7 @@
                 @foreach($repertuar as $play)
                     <a class="card" href="/repertuar/{{$play->id}}">
                         <div class="ph w">
-                            <img src="{{asset('storage/' . $play->images[0])}}" alt="">
+                            <img src="{{asset('storage/' . $play->images[1])}}" alt="">
                         </div>
                         <div class="b"><span class="tag">{{$play->genre}}, {{$play->age}}+</span>
                             <h3>{{$play->name}}</h3><span class="mut">Режиссёр: {{$play->director}}</span></div>
@@ -114,7 +114,7 @@
 <footer>
     <div class="wrap">
         <div class="g">
-            <div><a class="logo" href="/">Театр СНАМи</a>
+            <div><a class="logo" href="/">Театр "СНАМи"</a>
                 <p>Театральный союз. Играем живые спектакли для тех, кто любит театр.</p></div>
             <div><a href="/afisha">Афиша</a><a href="/repertuar">Репертуар</a><a href="/members">Состав</a><a
                     href="/reviews">Отзывы</a></div>

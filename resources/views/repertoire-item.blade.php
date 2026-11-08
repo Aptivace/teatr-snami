@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Афиша — Театр СНАМИ</title>
+    <title>{{$play->name}} — Театр СНАМИ</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -36,15 +36,40 @@
                 <div class="facts">
                     <div><span>Режиссёр</span>{{$play->director}}</div>
                     <div><span>Жанр</span>{{$play->genre}}</div>
-                    <div><span>Длительность</span>{{$play->duration}}</div>
+                    <div><span>Длительность</span>{{$play->duration_text}}</div>
                     <div><span>Возраст</span>{{$play->age}}+</div>
                 </div>
-                <p>{{$play->desc}}</p>
+                <div class="desc">{{ \App\Support\Text::rich($play->desc) }}</div>
                 <a class="btn" href="#dates">Ближайшие показы</a>
             </div>
         </div>
     </section>
-    <section class="sec alt">
+
+    @php $gallery = collect($play->images)->slice(1)->values(); @endphp
+
+    @if($gallery->isNotEmpty())
+        <section class="sec alt">
+            <div class="wrap">
+                <h2>Фотографии</h2>
+                <div class="gallery">
+                    @foreach($gallery as $i => $img)
+                        <button type="button" class="gallery-item" aria-label="Открыть фото {{ $i + 1 }}">
+                            <img src="{{ asset('storage/' . $img) }}" alt="{{ $play->name }}, фото {{ $i + 1 }}" loading="lazy">
+                        </button>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+        <dialog id="lightbox" class="lightbox">
+            <button type="button" class="lb-close" aria-label="Закрыть">✕</button>
+            <button type="button" class="lb-nav lb-prev" aria-label="Назад">‹</button>
+            <img id="lb-img" alt="">
+            <button type="button" class="lb-nav lb-next" aria-label="Вперёд">›</button>
+            <div class="lb-count" id="lb-count"></div>
+        </dialog>
+    @endif
+    <section class="sec">
         <div class="wrap">
             <h2>В ролях</h2>
             <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">
@@ -57,7 +82,7 @@
             </div>
         </div>
     </section>
-    <section class="sec">
+    <section class="sec alt">
         <div class="wrap split">
             <div id="dates"><h2>Ближайшие показы</h2>
                 @foreach($afishes as $afisha)
@@ -77,6 +102,8 @@
             </div>
         </div>
     </section>
+
+
 </main>
 <footer>
     <div class="wrap">
@@ -93,5 +120,55 @@
         <small>© 2026 Театр СНАМи</small>
     </div>
 </footer>
+
+<script>
+    (() => {
+        const dlg = document.getElementById('lightbox');
+        if (!dlg) return;
+
+        const items = [...document.querySelectorAll('.gallery-item')];
+        const img = document.getElementById('lb-img');
+        const counter = document.getElementById('lb-count');
+        let cur = 0;
+
+        const show = (i) => {
+            cur = (i + items.length) % items.length;
+            const src = items[cur].querySelector('img');
+            img.src = src.src;
+            img.alt = src.alt;
+            counter.textContent = `${cur + 1} / ${items.length}`;
+        };
+
+        items.forEach((btn, i) => btn.addEventListener('click', () => {
+            show(i);
+            dlg.showModal();
+        }));
+
+        dlg.querySelector('.lb-close').addEventListener('click', () => dlg.close());
+        dlg.querySelector('.lb-prev').addEventListener('click', () => show(cur - 1));
+        dlg.querySelector('.lb-next').addEventListener('click', () => show(cur + 1));
+
+        // клик по тёмному фону закрывает
+        dlg.addEventListener('click', (e) => {
+            if (e.target === dlg) dlg.close();
+        });
+
+        // стрелки на клавиатуре (Esc закрывает сам dialog)
+        dlg.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') show(cur - 1);
+            if (e.key === 'ArrowRight') show(cur + 1);
+        });
+
+        // свайп на телефоне
+        let x0 = null;
+        dlg.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, {passive: true});
+        dlg.addEventListener('touchend', (e) => {
+            if (x0 === null) return;
+            const dx = e.changedTouches[0].clientX - x0;
+            if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1));
+            x0 = null;
+        });
+    })();
+</script>
 </body>
 </html>

@@ -344,3 +344,139 @@ input:focus, textarea:focus, select:focus {
         transition: none !important
     }
 }
+
+.pick {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px
+}
+
+.pick-col {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px;
+    background: #faf7f4;
+    min-width: 0
+}
+
+.pick-h {
+    font-weight: 600;
+    font-size: .88rem;
+    margin-bottom: 10px
+}
+
+.pick-h span {
+    color: var(--mut);
+    font-weight: 400
+}
+
+.pick-col input[type=search] {
+    margin-bottom: 10px
+}
+
+.pick-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+    max-height: 320px;
+    overflow-y: auto
+}
+
+.pick-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 6px 6px 6px 12px
+}
+
+.pick-item[hidden] {
+    display: none
+}
+
+#pick-available .rm,
+#pick-selected .add {
+    display: none
+}
+
+.pick-empty {
+    margin: 0;
+    color: var(--mut);
+    font-size: .88rem
+}
+
+@media (max-width: 860px) {
+    .pick {
+        grid-template-columns: 1fr
+    }
+}
+
+.img-prev {
+    list-style: none;
+    margin: 0 0 18px;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px
+}
+
+.img-prev:empty {
+    display: none
+}
+
+.img-prev-item {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden
+}
+
+.img-prev-item img {
+    display: block;
+    width: 100%;
+    height: 110px;
+    object-fit: cover
+}
+
+.img-main {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--ac);
+    color: #fff;
+    font-size: .75rem;
+    font-weight: 600
+}
+
+.img-ctl {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px
+}
+
+.img-ctl button {
+    border: 0;
+    background: none;
+    color: var(--ink);
+    font: inherit;
+    padding: 2px 10px;
+    border-radius: 6px;
+    cursor: pointer
+}
+
+.img-ctl button:hover:not(:disabled) {
+    background: #f2e8e0
+}
+
+.img-ctl button:disabled {
+    opacity: .3;
+    cursor: default
+}

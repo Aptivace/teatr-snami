@@ -25,6 +25,16 @@
         </form>
     </aside>
     <main>
+
+        @php
+            $dateValue = old('date', isset($afisha) && $afisha->date
+                ? \Carbon\Carbon::parse($afisha->date)->format('Y-m-d')
+                : '');
+
+            $timeValue = old('time', isset($afisha) && $afisha->time
+                ? \Carbon\Carbon::parse($afisha->time)->format('H:i')
+                : '');
+        @endphp
         <div class="top">
             <h1>{{ isset($afisha) ? 'Редактировать афишу' : 'Новая афиша' }}</h1>
             <a class="btn g" href="/admin">К списку</a>
@@ -48,7 +58,7 @@
 
             <div class="f">
                 <div class="full">
-                    <label for="play">Спектакль</label>
+                    <label for="play">Спектакль *</label>
                     <select id="play" name="spectacle_id" required>
                         <option value="">Выберите спектакль</option>
                         @foreach($spectacles as $spectacle)
@@ -59,27 +69,27 @@
                     </select>
                 </div>
                 <div>
-                    <label for="d">Дата</label>
-                    <input id="d" type="date" name="date" value="{{ old('date', $afisha->date ?? '') }}" required>
+                    <label for="d">Дата *</label>
+                    <input id="d" type="date" name="date" value="{{ $dateValue }}" required>
                 </div>
                 <div>
-                    <label for="t">Время</label>
-                    <input id="t" type="time" name="time" value="{{ old('time', $afisha->time ?? '') }}" required>
+                    <label for="t">Время *</label>
+                    <input id="t" type="time" name="time" value="{{ $timeValue }}" required>
                 </div>
                 <div>
-                    <label for="v">Площадка</label>
+                    <label for="v">Площадка (театр "Три ступени") *</label>
                     <input id="v" name="address" value="{{ old('address', $afisha->address ?? '') }}" required>
                 </div>
                 <div>
-                    <label for="pr">Цена от, ₽</label>
+                    <label for="pr">Цена, ₽  (пример: 1200)*</label>
                     <input id="pr" type="number" min="0" name="price" value="{{ old('price', $afisha->price ?? '') }}" required>
                 </div>
                 <div>
-                    <label for="city">Город</label>
+                    <label for="city">Город (адрес) *</label>
                     <input id="city" name="city" value="{{ old('city', $afisha->city ?? '') }}" required>
                 </div>
                 <div>
-                    <label for="st">Статус</label>
+                    <label for="st">Статус *</label>
                     <select id="st" name="status">
                         <option value="active" {{ old('status', $afisha->status ?? '') == 'active' ? 'selected' : '' }}>Опубликована</option>
                         <option value="pending" {{ old('status', $afisha->status ?? '') == 'pending' ? 'selected' : '' }}>Черновик</option>
@@ -88,11 +98,11 @@
                     </select>
                 </div>
                 <div>
-                    <label for="ticket_url">Ссылка на покупку билета</label>
+                    <label for="ticket_url">Ссылка на покупку билета *</label>
                     <input type="text" name="ticket_url" id="ticket_url" required value="{{ old('ticket_url', $afisha->ticket_url ?? '') }}">
                 </div>
                 <div class="full">
-                    <label for="ds">Описание показа</label>
+                    <label for="ds">Описание показа (дополнительная информация)</label>
                     <textarea id="ds" name="desc">{{ old('desc', $afisha->desc ?? '') }}</textarea>
                 </div>
             </div>

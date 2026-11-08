@@ -133,6 +133,7 @@ class SpectacleController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'desc' => 'required|string',
+            'short_desc' => "nullable|string",
             'age' => 'required|integer',
             'genre' => 'required|string',
             'duration' => 'required|integer',
@@ -176,6 +177,7 @@ class SpectacleController extends Controller
         $spectacle->update([
             'name' => $validated['name'],
             'desc' => $validated['desc'],
+            'short_desc' => $validated['short_desc'],
             'age' => $validated['age'],
             'genre' => $validated['genre'],
             'duration' => $validated['duration'],

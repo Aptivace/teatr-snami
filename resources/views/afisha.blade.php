@@ -38,7 +38,7 @@
                             $monthName = \Carbon\Carbon::create()->month($monthNumber)->translatedFormat('F');
                         @endphp
                         <a class="chip {{ request('month') == $monthNumber ? 'on' : '' }}"
-                           href="{{ "/afisha/$monthNumber" }}">
+                           href="{{ "/afisha/?month=$monthNumber" }}">
                             {{ ucfirst($monthName) }}
                         </a>
                     @endforeach
@@ -52,9 +52,9 @@
                         {{ \Carbon\Carbon::parse($afisha->date)->translatedFormat('d M') }}
                     </div>
                     <div class="i">
-                        <b>{{ $afisha->spectacle->title ?? 'Название спектакля' }}</b>
+                        <b>{{ $afisha->spectacle->name }}</b>
                         <span class="mut">
-                            {{ \Carbon\Carbon::parse($afisha->date)->translatedFormat('l') }}, {{ $afisha->time }} · {{ $afisha->address }} · от {{ $afisha->price }} ₽
+                            {{ \Carbon\Carbon::parse($afisha->date)->translatedFormat('l') }}, {{ $afisha->time }} · {{ $afisha->city }} · {{ $afisha->price }} ₽
                         </span>
                     </div>
                     <span class="btn">Подробнее</span>
