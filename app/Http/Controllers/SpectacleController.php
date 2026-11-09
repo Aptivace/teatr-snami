@@ -135,6 +135,7 @@ class SpectacleController extends Controller
             'desc' => 'required|string',
             'short_desc' => "nullable|string",
             'age' => 'required|integer',
+            'director' => 'required|string',
             'genre' => 'required|string',
             'duration' => 'required|integer',
             'images' => 'nullable|array', // Новые картинки опциональны при обновлении
