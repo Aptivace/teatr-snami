@@ -75,7 +75,7 @@
                         <div class="d">{{ \Carbon\Carbon::parse($other->date)->translatedFormat('d M') }}</div>
                         <div class="i">
                             <b>{{ $other->spectacle->name }}</b>
-                            <span class="mut">{{ \Carbon\Carbon::parse($other->date)->translatedFormat('l, H:i') }}</span>
+                            <span class="mut">{{ \Carbon\Carbon::parse($other->date)->translatedFormat('l') }}, {{ $other->time }} </span>
                         </div>
                         <span class="btn">Подробнее</span>
                     </a>
