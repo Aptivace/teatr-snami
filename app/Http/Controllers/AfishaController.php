@@ -106,6 +106,7 @@ class AfishaController extends Controller
             'time' => 'required|string|max:50',
             'price' => 'required|integer|min:0',
             'desc' => 'nullable|string',
+            'ticket_url' => 'nullable|string',
             'status' => 'required|string|in:pending,active,cancelled,completed',
         ]);
 
