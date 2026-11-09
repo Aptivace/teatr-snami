@@ -58,7 +58,7 @@
                         <td>
                             <div class="acts">
                                 <a class="btn s g" href="{{"/admin/afishes/$afisha->id/edit"}}" >Изменить</a>
-                                <form method="POST" action="{{"/admin/afishes/$afisha->id/remove"}}}" onsubmit="return confirm('Удалить афишу?')">
+                                <form method="POST" action="{{"/admin/afishes/$afisha->id/remove"}}" onsubmit="return confirm('Удалить афишу?')">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn s bad">Удалить</button>
