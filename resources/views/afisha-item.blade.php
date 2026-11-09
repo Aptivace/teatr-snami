@@ -32,9 +32,6 @@
             </div>
             <div>
                 {{-- Дата и время показа (например: 12 октября, пятница, 19:00) --}}
-                <span class="tag">
-                    {{ $afisha->date->translatedFormat('d F, l') }}, {{ $afisha->time }}
-                </span><br><br>
 
                 <h1 style="font-size:clamp(2rem,5vw,3.4rem)">
                     {{ $afisha->spectacle->name ?? 'Название спектакля' }}
@@ -46,6 +43,7 @@
                     <div><span>Длительность</span>{{ $afisha->spectacle->duration_text}}</div>
                     <div><span>Возраст</span>{{ $afisha->spectacle->age }}+</div>
                     <div><span>Адрес</span>{{ $afisha->city }}</div>
+                    <div><span>Дата и время</span>{{ $afisha->date->translatedFormat('d F, l') }}, {{ $afisha->time }}</div>
                 </div>
 
                 <div class="desc">
