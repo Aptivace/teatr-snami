@@ -38,7 +38,7 @@
                             <img src="{{asset("storage/" . $play->images[1])}}" alt="{{$play->name}}">
                         </div>
                         <div class="b"><span class="tag">{{$play->genre}}, {{$play->age}}+</span>
-                            <h3>{{$play->name}}</h3><span class="mut">{{$play->short_desc}}</span></div>
+                            <h3>{{$play->name}}</h3><span class="mut">Режиссёр: {{$play->director}}</span><span class="mut">{{$play->short_desc}}</span></div>
                     </a>
                 @endforeach
 

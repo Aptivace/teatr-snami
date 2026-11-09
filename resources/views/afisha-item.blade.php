@@ -42,7 +42,7 @@
 
                 <div class="facts">
                     <div><span>Площадка</span>{{ $afisha->address }}</div>
-                    <div><span>Стоимость</span>{{ $afisha->price }} ₽</div>
+                    <div><span>Стоимость</span>{{ $afisha->price > 0 ? "от {$afisha->price} ₽" : 'вход свободный' }}</div>
                     <div><span>Длительность</span>{{ $afisha->spectacle->duration_text}}</div>
                     <div><span>Возраст</span>{{ $afisha->spectacle->age }}+</div>
                     <div><span>Адрес</span>{{ $afisha->city }}</div>
