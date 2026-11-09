@@ -54,7 +54,7 @@
                     <div class="i">
                         <b>{{ $afisha->spectacle->name }}</b>
                         <span class="mut">
-                            {{ \Carbon\Carbon::parse($afisha->date)->translatedFormat('l') }}, {{ $afisha->time }} · {{ $afisha->city }} · {{ $afisha->price }} ₽
+                            {{ \Carbon\Carbon::parse($afisha->date)->translatedFormat('l') }}, {{ $afisha->time }} · {{ $afisha->city }} · {{ $afisha->price > 0 ? "от {$afisha->price} ₽" : 'вход свободный' }}
                         </span>
                     </div>
                     <span class="btn">Подробнее</span>

@@ -83,12 +83,22 @@
             <div>
                 <h3>Награды</h3>
 
-                @foreach($rewards as $reward)
-                    <div class="award"><b>{{$reward->name}}</b><span
-                            class="mut">{{$reward->year}}, {{$reward->festival_name}} · {{$reward->spectacle ? "«{$reward->spectacle->name}»" : ""}} </span>
+                @foreach($rewards->take(3) as $reward)
+                    <div class="award"><b>{{ $reward->name }}</b><span
+                            class="mut">{{ $reward->year }}, {{ $reward->festival_name }}{{ $reward->spectacle ? " · «{$reward->spectacle->name}»" : '' }}</span>
                     </div>
-                    <br>
                 @endforeach
+
+                @if($rewards->count() > 3)
+                    <details class="awards-more">
+                        <summary>Показать все ({{ $rewards->count() }})</summary>
+                        @foreach($rewards->slice(3) as $reward)
+                            <div class="award"><b>{{ $reward->name }}</b><span
+                                    class="mut">{{ $reward->year }}, {{ $reward->festival_name }}{{ $reward->spectacle ? " · «{$reward->spectacle->name}»" : '' }}</span>
+                            </div>
+                        @endforeach
+                    </details>
+                @endif
 
 
             </div>

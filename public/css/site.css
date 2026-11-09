@@ -945,3 +945,14 @@ body:has(.mdlg[open]) {
         padding: 22px 18px
     }
 }
+
+.award { margin-bottom: 16px; }
+
+.awards-more summary {
+    cursor: pointer;
+    list-style: none;
+    color: inherit;
+    text-decoration: underline;
+    margin-bottom: 16px;
+}
+.awards-more summary::-webkit-details-marker { display: none; }
