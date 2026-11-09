@@ -142,6 +142,8 @@ class SpectacleController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'delete_images' => 'nullable|array', // Массив путей старых картинок, которые нужно удалить
             'delete_images.*' => 'string',
+            'members' => 'required|array|min:1',
+            'members.*' => 'integer|exists:members,id',
         ]);
 
         // 2. Получаем текущий массив картинок из базы (предполагаем, что поле настроено как 'array' в $casts)
@@ -178,11 +180,12 @@ class SpectacleController extends Controller
         $spectacle->update([
             'name' => $validated['name'],
             'desc' => $validated['desc'],
-            'short_desc' => $validated['short_desc'],
+            'short_desc' => $validated['short_desc'] ?? null,
             'age' => $validated['age'],
+            'director' => $validated['director'],
             'genre' => $validated['genre'],
             'duration' => $validated['duration'],
-            'images' => $currentImages, // Сохраняем итоговый актуальный список путей
+            'images' => $currentImages,
         ]);
 
         return back()->with('success', 'Запись успешно обновлена!');
