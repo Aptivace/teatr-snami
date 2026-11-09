@@ -73,7 +73,7 @@ class AfishaController extends Controller
      */
     public function show(Afisha $afisha)
     {
-        $otherDates = Afisha::where('spectacle_id', $afisha->spectacle_id)
+        $otherDates = Afisha::where(['spectacle_id' => $afisha->spectacle_id, 'status' => 'active'])
             ->where('id', '!=', $afisha->id)
             ->where('date', '>=', now())
             ->orderBy('date')

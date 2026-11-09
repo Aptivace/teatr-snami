@@ -72,10 +72,10 @@
                 <h2>Другие даты</h2>
                 @foreach($otherDates as $other)
                     <a class="date" href="{{ "/afisha/$other->id" }}">
-                        <div class="d">{{ $other->date->format('d M') }}</div>
+                        <div class="d">{{ \Carbon\Carbon::parse($other->date)->translatedFormat('d M') }}</div>
                         <div class="i">
                             <b>{{ $other->spectacle->name }}</b>
-                            <span class="mut">{{ $other->date->translatedFormat('l, H:i') }}</span>
+                            <span class="mut">{{ \Carbon\Carbon::parse($other->date)->translatedFormat('l, H:i') }}</span>
                         </div>
                         <span class="btn">Подробнее</span>
                     </a>
