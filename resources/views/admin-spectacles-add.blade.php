@@ -77,6 +77,7 @@
                 </div>
                 <div class="full">
                     <ul id="img-prev" class="img-prev"></ul>
+                    <div id="img-order"></div>
                 </div>
                 <div class="full">
                     <label for="ds">Описание *</label>
@@ -87,8 +88,8 @@
                     </small>
                 </div>
                 <div class="full">
-                    <label for="ds">Краткое описание (карточка репертуара)</label>
-                    <textarea id="ds" name="short_desc" rows="5">{{ old('desc', $spectacle->short_desc ?? '') }}</textarea>
+                    <label for="sds">Краткое описание (карточка репертуара)</label>
+                    <textarea id="sds" name="short_desc" rows="5">{{ old('short_desc', $spectacle->short_desc ?? '') }}</textarea>
                 </div>
                 @php
                     $selectedIds = collect(old('members', isset($spectacle) ? $spectacle->members->pluck('id')->all() : []))
@@ -144,43 +145,58 @@
     (() => {
         const input = document.getElementById('im');
         const list = document.getElementById('img-prev');
-        const urls = new WeakMap();
-        let files = [];
+        const orderBox = document.getElementById('img-order');
 
-        const urlOf = (f) => {
-            if (!urls.has(f)) urls.set(f, URL.createObjectURL(f));
-            return urls.get(f);
-        };
+        const storageBase = @json(asset('storage')) + '/';
+        const existing = @json(isset($spectacle) ? ($spectacle->images ?? []) : []);
+
+        // единый список: старые (type: 'old') и новые (type: 'new') фотки в нужном порядке
+        let items = existing.map((p) => ({ type: 'old', path: p, src: storageBase + p }));
+
+        const same = (a, b) => a.name === b.name && a.size === b.size && a.lastModified === b.lastModified;
 
         const sync = () => {
+            // в input кладём только новые файлы, в порядке их появления в списке
             const dt = new DataTransfer();
-            files.forEach((f) => dt.items.add(f));
-            input.files = dt.files;   // именно это уйдёт на сервер, в этом порядке
+            items.filter((it) => it.type === 'new').forEach((it) => dt.items.add(it.file));
+            input.files = dt.files;
+
+            // порядок всего списка: old:<путь> или new:<индекс среди новых файлов>
+            orderBox.innerHTML = '';
+            let n = 0;
+            items.forEach((it) => {
+                const h = document.createElement('input');
+                h.type = 'hidden';
+                h.name = 'order[]';
+                h.value = it.type === 'old' ? `old:${it.path}` : `new:${n++}`;
+                orderBox.appendChild(h);
+            });
+
             render();
         };
 
         const render = () => {
             list.innerHTML = '';
-            files.forEach((f, i) => {
+            items.forEach((it, i) => {
                 const li = document.createElement('li');
                 li.className = 'img-prev-item';
                 li.innerHTML = `
-                    <img src="${urlOf(f)}" alt="">
+                    <img src="${it.src}" alt="">
                     ${i === 0 ? '<span class="img-main">Главное</span>' : ''}
                     <div class="img-ctl">
                         <button type="button" data-act="left" data-i="${i}" ${i === 0 ? 'disabled' : ''} aria-label="Левее">←</button>
                         <button type="button" data-act="del" data-i="${i}" aria-label="Убрать">✕</button>
-                        <button type="button" data-act="right" data-i="${i}" ${i === files.length - 1 ? 'disabled' : ''} aria-label="Правее">→</button>
+                        <button type="button" data-act="right" data-i="${i}" ${i === items.length - 1 ? 'disabled' : ''} aria-label="Правее">→</button>
                     </div>`;
                 list.appendChild(li);
             });
         };
 
-        // новые выбранные файлы добавляем к уже выбранным, а не заменяем
+        // новые выбранные файлы добавляем к списку, а не заменяем
         input.addEventListener('change', () => {
-            const same = (a, b) => a.name === b.name && a.size === b.size && a.lastModified === b.lastModified;
             [...input.files].forEach((f) => {
-                if (!files.some((x) => same(x, f))) files.push(f);
+                const dup = items.some((it) => it.type === 'new' && same(it.file, f));
+                if (!dup) items.push({ type: 'new', file: f, src: URL.createObjectURL(f) });
             });
             sync();
         });
@@ -190,12 +206,14 @@
             if (!btn) return;
             const i = Number(btn.dataset.i);
 
-            if (btn.dataset.act === 'del') files.splice(i, 1);
-            if (btn.dataset.act === 'left' && i > 0) [files[i - 1], files[i]] = [files[i], files[i - 1]];
-            if (btn.dataset.act === 'right' && i < files.length - 1) [files[i + 1], files[i]] = [files[i], files[i + 1]];
+            if (btn.dataset.act === 'del') items.splice(i, 1);
+            if (btn.dataset.act === 'left' && i > 0) [items[i - 1], items[i]] = [items[i], items[i - 1]];
+            if (btn.dataset.act === 'right' && i < items.length - 1) [items[i + 1], items[i]] = [items[i], items[i + 1]];
 
             sync();
         });
+
+        sync();
     })();
 </script>
 

@@ -129,54 +129,54 @@ class SpectacleController extends Controller
      */
     public function update(Request $request, Spectacle $spectacle)
     {
-        // 1. Валидация входящих данных
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'desc' => 'required|string',
-            'short_desc' => "nullable|string",
+            'short_desc' => 'nullable|string',
             'age' => 'required|integer',
             'director' => 'required|string',
             'genre' => 'required|string',
             'duration' => 'required|integer',
-            'images' => 'nullable|array', // Новые картинки опциональны при обновлении
+            'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
-            'delete_images' => 'nullable|array', // Массив путей старых картинок, которые нужно удалить
-            'delete_images.*' => 'string',
+            'order' => 'required|array|min:1',   // итоговый порядок: old:<путь> / new:<индекс>
+            'order.*' => 'string',
             'members' => 'required|array|min:1',
             'members.*' => 'integer|exists:members,id',
+        ], [
+            'order.required' => 'Должна остаться хотя бы одна фотография.',
         ]);
 
-        // 2. Получаем текущий массив картинок из базы (предполагаем, что поле настроено как 'array' в $casts)
         $currentImages = $spectacle->images ?? [];
+        $newFiles = $request->file('images', []);
+        $finalImages = [];
 
-        // 3. Если пользователь решил удалить какие-то старые картинки
-        if ($request->has('delete_images')) {
-            foreach ($request->delete_images as $oldImagePath) {
-                // Удаляем файл из диска storage/app/public/...
-                if (Storage::disk('public')->exists($oldImagePath)) {
-                    Storage::disk('public')->delete($oldImagePath);
+        foreach ($validated['order'] as $token) {
+            if (str_starts_with($token, 'old:')) {
+                $path = substr($token, 4);
+                // берём только те пути, которые реально принадлежат этому спектаклю
+                if (in_array($path, $currentImages, true) && !in_array($path, $finalImages, true)) {
+                    $finalImages[] = $path;
                 }
-                // Убираем путь из массива
-                $currentImages = array_values(array_diff($currentImages, [$oldImagePath]));
+            } elseif (str_starts_with($token, 'new:')) {
+                $i = (int) substr($token, 4);
+                if (isset($newFiles[$i])) {
+                    $image = $newFiles[$i];
+                    $filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
+                    $finalImages[] = $image->storeAs('uploads', $filename, 'public');
+                }
             }
         }
 
-        // 4. Если загружены новые картинки — сохраняем их и добавляем к массиву
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $uuid = Str::uuid();
-                $extension = $image->getClientOriginalExtension();
-                $filename = "{$uuid}.{$extension}";
-
-                // Сохраняем в storage/app/public/uploads
-                $path = $image->storeAs('uploads', $filename, 'public');
-
-                // Добавляем в общий массив
-                $currentImages[] = $path;
-            }
+        if (empty($finalImages)) {
+            return back()->withErrors(['order' => 'Должна остаться хотя бы одна фотография.'])->withInput();
         }
 
-        // 5. Обновляем основные данные записи в БД
+        // удаляем с диска те старые, которых нет в итоговом списке
+        foreach (array_diff($currentImages, $finalImages) as $removed) {
+            Storage::disk('public')->delete($removed);
+        }
+
         $spectacle->update([
             'name' => $validated['name'],
             'desc' => $validated['desc'],
@@ -185,8 +185,11 @@ class SpectacleController extends Controller
             'director' => $validated['director'],
             'genre' => $validated['genre'],
             'duration' => $validated['duration'],
-            'images' => $currentImages,
+            'images' => $finalImages,
         ]);
+
+        // раньше состав при редактировании не обновлялся
+        $spectacle->members()->sync($validated['members']);
 
         return back()->with('success', 'Запись успешно обновлена!');
     }
